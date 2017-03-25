@@ -1,0 +1,40 @@
+{
+  "name": "lucy",
+  "version": "1.0.0",
+  "description": "",
+  "author": "",
+  "license": "MIT",
+  "main": "app/index.jsx",
+  "scripts": {
+    "build": "./node_modules/webpack/bin/webpack.js --config webpack.config.js",
+    "build:watch": "./node_modules/webpack/bin/webpack.js --config webpack.config.js --watch",
+    "serve": "./node_modules/webpack-dev-server/bin/webpack-dev-server.js",
+    "spec": "mocha --require test/spec.helper.js test/**/*.spec.js"
+  },
+  "dependencies": {
+    "react": "^15.4.2",
+    "react-dom": "^15.4.2"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.24.0",
+    "babel-core": "^6.24.0",
+    "babel-loader": "^6.4.1",
+    "babel-plugin-transform-class-properties": "^6.23.0",
+    "babel-plugin-transform-decorators": "^6.22.0",
+    "babel-plugin-transform-es2015-computed-properties": "^6.22.0",
+    "babel-plugin-transform-object-rest-spread": "^6.23.0",
+    "babel-polyfill": "^6.23.0",
+    "babel-preset-env": "^1.2.2",
+    "babel-preset-react": "^6.23.0",
+    "chai": "^3.5.0",
+    "chai-enzyme": "^0.6.1",
+    "enzyme": "^2.8.0",
+    "jsdom": "^9.12.0",
+    "mocha": "^3.2.0",
+    "react-addons-test-utils": "^15.4.2",
+    "sinon": "^2.1.0",
+    "sinon-chai": "^2.9.0",
+    "webpack": "^2.3.2",
+    "webpack-dev-server": "^2.4.2"
+  }
+}
