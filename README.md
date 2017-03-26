@@ -141,3 +141,64 @@ Here's what the state after the mutation will look like:
   ]
 }
 ```
+
+### Creating a Model Driven API
+
+You are free to build your own domain specific API on top of `rest-store`. Say your application consists of users and each user may have a list of comments. The following code, provide a domain specific API which encapsulates `rest-store` operations, providing a simpler interface.
+
+```js
+const createMemberApi = (store) => (path) => ({
+  merge: (data) => store.PATCH(path, data),
+  update: (data) => store.PUT(path, data),
+  delete: () => store.DELETE(path),
+})
+
+const memberApiFor = createMemberApi(store)
+
+store.actions.users = {
+  add: (userData) => store.POST("/users", userData),
+  at: (userIndex) => {
+    return {
+      ...memberApiFor(`/users/${userIndex}`),
+      comments: {
+        add: (commentData) => store.POST(`/users/${userIndex}/comments`, commentData),
+        at: (commentIndex) => {
+          return memberApiFor(`${commentsPath}/${commentIndex}`)
+        }
+      }
+  }
+}
+```
+
+In the coming future, there will be a generator that will spit out the actions API based off of the rest paths used to access data in the store. Here's how one would use the API:
+
+##### Adding new users
+
+```js
+store.actions.users.add({
+  name: "diego",
+})
+```
+
+##### Deleting an existing user
+
+```js
+store.actions.users.at(userIndex).delete()
+```
+
+##### Adding a new comment to an existing user
+
+```js
+store.actions.users.at(userIndex).comments.add({
+  text: "Brand new comment",
+})
+```
+
+##### Merging data to an existing comment of an existing user
+
+```js
+store.actions.users.at(userIndex).comments.at(commentIndex).merge({
+  id: 123,
+  text: "Updated comment text ",
+})
+```
