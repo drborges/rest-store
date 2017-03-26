@@ -3,19 +3,25 @@ import { Store } from "../lib/reduxful"
 import update from 'immutability-helper'
 
 describe("Store", () => {
-  describe("#POST", () => {
-    const store = new Store({
+  let store;
+
+  beforeEach(() => {
+    store = new Store({
       users: [
         { name: "diego", comments: [] },
         { name: "bibi" },
+        { name: "ronaldo", comments: [{ text: "LoL", id: 123 }] },
       ]
     })
+  })
 
+  describe("#POST", () => {
     it("adds a new comment to the corresponding user", () => {
       const stateAfter = {
         users: [
           { name: "diego", comments: [{ text: "LoL" }] },
           { name: "bibi" },
+          { name: "ronaldo", comments: [{ text: "LoL", id: 123 }] },
         ]
       }
 
@@ -28,14 +34,6 @@ describe("Store", () => {
   })
 
   describe("#PATCH", () => {
-    const store = new Store({
-      users: [
-        { name: "diego", comments: [] },
-        { name: "bibi" },
-        { name: "ronaldo", comments: [{ text: "LoL", id: 123 }] },
-      ]
-    })
-
     it("patches a given user's comment", () => {
       const stateAfter = {
         users: [
@@ -54,14 +52,6 @@ describe("Store", () => {
   })
 
   describe("#PUT", () => {
-    const store = new Store({
-      users: [
-        { name: "diego", comments: [] },
-        { name: "bibi" },
-        { name: "ronaldo", comments: [{ text: "LoL" }] },
-      ]
-    })
-
     it("updates a given user with a whole new content", () => {
       const stateAfter = {
         users: [
@@ -80,14 +70,6 @@ describe("Store", () => {
   })
 
   describe("#DELETE", () => {
-    const store = new Store({
-      users: [
-        { name: "diego", comments: [] },
-        { name: "bibi" },
-        { name: "ronaldo", comments: [{ text: "LoL" }] },
-      ]
-    })
-
     it("deletes the corresponding user's comment", () => {
       const stateAfter = {
         users: [
