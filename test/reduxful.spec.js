@@ -32,21 +32,47 @@ describe("Store", () => {
       users: [
         { name: "diego", comments: [] },
         { name: "bibi" },
-        { name: "ronaldo", comments: [{ text: "LoL" }] },
+        { name: "ronaldo", comments: [{ text: "LoL", id: 123 }] },
       ]
     })
 
-    it("updates a given user's comment", () => {
+    it("patches a given user's comment", () => {
       const stateAfter = {
         users: [
           { name: "diego", comments: [] },
           { name: "bibi" },
-          { name: "ronaldo", comments: [{ text: "Nice!" }] },
+          { name: "ronaldo", comments: [{ text: "Nice!", id: 123 }] },
         ]
       }
 
       store.PATCH("/users/2/comments/0", {
         text: "Nice!"
+      })
+
+      expect(store.state).to.deep.equal(stateAfter)
+    })
+  })
+
+  describe("#PUT", () => {
+    const store = new Store({
+      users: [
+        { name: "diego", comments: [] },
+        { name: "bibi" },
+        { name: "ronaldo", comments: [{ text: "LoL" }] },
+      ]
+    })
+
+    it("updates a given user with a whole new content", () => {
+      const stateAfter = {
+        users: [
+          { name: "diego", comments: [] },
+          { name: "bibi" },
+          { name: "Ronaldo" },
+        ]
+      }
+
+      store.PUT("/users/2", {
+        name: "Ronaldo",
       })
 
       expect(store.state).to.deep.equal(stateAfter)
