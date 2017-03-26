@@ -1,6 +1,5 @@
 import { expect } from "chai"
-import { Store } from "../lib/reduxful"
-import update from 'immutability-helper'
+import { Store } from "../lib/store"
 
 describe("Store", () => {
   let store;
