@@ -172,7 +172,7 @@ Here's what the state after the mutation will look like:
 }
 ```
 
-#### Store#fetch - Fetching Data
+#### Store#get - Fetching Data
 
 Given the `state` held by a `store`:
 
@@ -188,7 +188,7 @@ Given the `state` held by a `store`:
 The following code fetches the comment at index `0` in the `comments` list of the user at index `1` in the `users` list:
 
 ```js
-const comment = store.fetch("/users/1/comments/0")
+const comment = store.get("/users/1/comments/0")
 => { text: "A brand new comment" }
 ```
 

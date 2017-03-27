@@ -84,10 +84,10 @@ describe("Store", () => {
     })
   })
 
-  describe("#fetch", () => {
-    it("fetches subtree from store for the given path", () => {
+  describe("#get", () => {
+    it("gets subtree from store for the given path", () => {
       const expectedSubtree = { text: "LoL", id: 123 }
-      const subtree = store.fetch("/users/2/comments/0")
+      const subtree = store.get("/users/2/comments/0")
 
       expect(subtree).to.deep.equal(expectedSubtree)
     })
