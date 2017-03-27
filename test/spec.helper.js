@@ -1,4 +1,3 @@
-
 require("babel-register")()
 var jsdom = require("jsdom").jsdom
 var chai = require("chai")
@@ -23,4 +22,3 @@ global.navigator = {
 }
 
 documentRef = document
-

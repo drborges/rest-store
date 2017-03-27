@@ -9,7 +9,7 @@
     "build": "./node_modules/webpack/bin/webpack.js --config webpack.config.js",
     "build:watch": "./node_modules/webpack/bin/webpack.js --config webpack.config.js --watch",
     "serve": "./node_modules/webpack-dev-server/bin/webpack-dev-server.js",
-    "spec": "mocha --require test/spec.helper.js test/**/*.spec.js"
+    "spec": "mocha --require test/spec.helper.js test/*.spec.js test/**/*.spec.js"
   },
   "dependencies": {
     "immutability-helper": "^2.1.2",
