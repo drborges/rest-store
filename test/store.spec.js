@@ -1,5 +1,5 @@
 import { expect } from "chai"
-import { Store } from "../lib/store"
+import Store from "../lib/store"
 
 describe("Store", () => {
   let store, resources;
