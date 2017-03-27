@@ -92,4 +92,32 @@ describe("Store", () => {
       expect(subtree).to.deep.equal(expectedSubtree)
     })
   })
+
+  describe("#map", () => {
+    it("applies a mapping function to the corresponding subtree", () => {
+      const stateAfter = {
+        users: [
+          { name: "diego", comments: [] },
+          { name: "bibi" },
+          {
+            name: "ronaldo", comments: [
+              {
+                text: "LoL",
+                description: "more information added to the comment",
+              }
+            ]
+          },
+        ]
+      }
+
+      store.map("/users/2/comments/0", (comment) => {
+        return {
+          text: comment.text,
+          description: "more information added to the comment",
+        }
+      })
+
+      expect(store.state).to.deep.equal(stateAfter)
+    })
+  })
 })
