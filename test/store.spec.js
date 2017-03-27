@@ -83,4 +83,13 @@ describe("Store", () => {
       expect(store.state).to.deep.equal(stateAfter)
     })
   })
+
+  describe("#fetch", () => {
+    it("fetches subtree from store for the given path", () => {
+      const expectedSubtree = { text: "LoL", id: 123 }
+      const subtree = store.fetch("/users/2/comments/0")
+
+      expect(subtree).to.deep.equal(expectedSubtree)
+    })
+  })
 })
