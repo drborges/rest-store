@@ -66,6 +66,20 @@ describe("Store", () => {
 
       expect(store.state).to.deep.equal(stateAfter)
     })
+
+    it("updates the name of a given user", () => {
+      const stateAfter = {
+        users: [
+          { name: "diego", comments: [] },
+          { name: "bibi" },
+          { name: "hernando", comments: [{ text: "LoL", id: 123 }] },
+        ]
+      }
+
+      store.put("/users/2/name", "hernando")
+
+      expect(store.state).to.deep.equal(stateAfter)
+    })
   })
 
   describe("#delete", () => {
