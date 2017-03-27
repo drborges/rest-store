@@ -118,4 +118,20 @@ describe("#resources", () => {
       ])
     })
   })
+
+  describe("multiple resources", () => {
+    it("allows resources to be mutated independently", () => {
+      const firstUser = resources.users[0]
+      const lastUser = resources.users[2]
+      const lastUserComment = lastUser.comments[0]
+
+      firstUser.name = "hernando"
+      lastUser.name = "giulianna"
+      lastUserComment.text = "new comment text"
+
+      expect(store.state.users[0].name).to.equal("hernando")
+      expect(store.state.users[2].name).to.equal("giulianna")
+      expect(store.state.users[2].comments[0].text).to.equal("new comment text")
+    })
+  })
 })
