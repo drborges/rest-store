@@ -232,4 +232,46 @@ describe("Store", () => {
       })
     })
   })
+
+  describe("#subscribe", () => {
+    it("notifies listeners upon state mutations", () => {
+      const stateAfter = {
+        users: [
+          { name: "diego", comments: [] },
+          { name: "bibi", comments: [] },
+          { name: "ronaldo", comments: [] },
+        ]
+      }
+
+      let actualState = {}
+      store.subscribe(state => { actualState = state })
+
+      delete resources.users[2].comments[0]
+
+      expect(actualState).to.deep.equal(stateAfter)
+    })
+
+    it("unsubscribes listener from the store", () => {
+      const stateAfter = {
+        users: [
+          { name: "diego", comments: [] },
+          { name: "bibi", comments: [] },
+          { name: "ronaldo", comments: [] },
+        ]
+      }
+
+      let notifiedState = {}
+      const unsubscribe = store.subscribe(state => { notifiedState = state })
+
+      delete resources.users[2].comments[0]
+
+      expect(notifiedState).to.deep.equal(stateAfter)
+
+      unsubscribe()
+
+      resources.users[2].name = "matheus"
+
+      expect(notifiedState).to.deep.equal(stateAfter)
+    })
+  })
 })
