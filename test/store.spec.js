@@ -2,7 +2,7 @@ import { expect } from "chai"
 import Store from "../lib/store"
 
 describe("Store", () => {
-  let store, resources;
+  let store
 
   beforeEach(() => {
     store = new Store({
@@ -12,8 +12,6 @@ describe("Store", () => {
         { name: "ronaldo", comments: [{ text: "LoL", id: 123 }] },
       ]
     })
-
-    resources = store.resources()
   })
 
   describe("#post", () => {
@@ -137,102 +135,6 @@ describe("Store", () => {
     })
   })
 
-  describe("#resources", () => {
-    describe("#fetch", () => {
-      it("retrieves an existing comment from an existing user", () => {
-        const comment = resources.users[2].comments[0].fetch()
-
-        expect(comment).to.deep.equal({ text: "LoL", id: 123 })
-      })
-    })
-
-    describe("#=", () => {
-      it("sets the contents of an existing comment", () => {
-        const stateAfter = {
-          users: [
-            { name: "diego", comments: [] },
-            { name: "bibi", comments: [{ text: "new comment" }] },
-            { name: "ronaldo", comments: [{ text: "LoL", id: 123 }] },
-          ]
-        }
-
-        resources.users[1].comments[0] = {
-          text: "new comment",
-        }
-
-        expect(store.state).to.deep.equal(stateAfter)
-      })
-    })
-
-    describe("#push", () => {
-      it("adds a new comment to an existing user", () => {
-        const stateAfter = {
-          users: [
-            { name: "diego", comments: [] },
-            { name: "bibi", comments: [{ text: "new comment" }] },
-            { name: "ronaldo", comments: [{ text: "LoL", id: 123 }] },
-          ]
-        }
-
-        resources.users[1].comments.push({
-          text: "new comment",
-        })
-
-        expect(store.state).to.deep.equal(stateAfter)
-      })
-    })
-
-    describe("#merge", () => {
-      it("merges data into an existing comment from an existing user", () => {
-        const stateAfter = {
-          users: [
-            { name: "diego", comments: [] },
-            { name: "bibi", comments: [] },
-            { name: "ronaldo", comments: [{ text: "LoL", id: 123, description: "more data in the comment" }] },
-          ]
-        }
-
-      resources.users[2].comments[0].merge({
-          description: "more data in the comment",
-        })
-
-        expect(store.state).to.deep.equal(stateAfter)
-      })
-    })
-
-    describe("#delete", () => {
-      it("deletes an existing comment from an existing user", () => {
-        const stateAfter = {
-          users: [
-            { name: "diego", comments: [] },
-            { name: "bibi", comments: [] },
-            { name: "ronaldo", comments: [] },
-          ]
-        }
-
-        resources.users[2].comments[0].delete()
-
-        expect(store.state).to.deep.equal(stateAfter)
-      })
-    })
-
-    describe("delete operator", () => {
-      it("deletes an existing comment from an existing user", () => {
-        const stateAfter = {
-          users: [
-            { name: "diego", comments: [] },
-            { name: "bibi", comments: [] },
-            { name: "ronaldo", comments: [] },
-          ]
-        }
-
-        delete resources.users[2].comments[0]
-
-        expect(store.state).to.deep.equal(stateAfter)
-      })
-    })
-  })
-
   describe("#subscribe", () => {
     it("notifies listeners upon state mutations", () => {
       const stateAfter = {
@@ -246,8 +148,7 @@ describe("Store", () => {
       let actualState = {}
       store.subscribe(state => { actualState = state })
 
-      delete resources.users[2].comments[0]
-
+      store.delete("/users/2/comments/0")
       expect(actualState).to.deep.equal(stateAfter)
     })
 
@@ -263,14 +164,12 @@ describe("Store", () => {
       let notifiedState = {}
       const unsubscribe = store.subscribe(state => { notifiedState = state })
 
-      delete resources.users[2].comments[0]
-
+      store.delete("/users/2/comments/0")
       expect(notifiedState).to.deep.equal(stateAfter)
 
       unsubscribe()
 
-      resources.users[2].name = "matheus"
-
+      store.put("/users/2/name", "matheus")
       expect(notifiedState).to.deep.equal(stateAfter)
     })
   })
