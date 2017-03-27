@@ -16,7 +16,7 @@ store = new Store({
 ### Defining Route Validations (TODO)
 
 ```js
-store.validate.POST("/users", {
+store.validate.post("/users", {
   name: [
     validations.string.required,
     validations.length.min(3),
@@ -26,7 +26,7 @@ store.validate.POST("/users", {
   ]
 })
 
-store.validate.PUT("/users/:userId", {
+store.validate.put("/users/:userId", {
   name: [
     validations.string.required,
     validations.length.min(3),
@@ -36,7 +36,7 @@ store.validate.PUT("/users/:userId", {
   ]
 })
 
-store.validate.PUT("/users/:userId/comments/:commentId", {
+store.validate.put("/users/:userId/comments/:commentId", {
   text: [
     validations.string.required,
     validations.length.min(3),
@@ -46,7 +46,7 @@ store.validate.PUT("/users/:userId/comments/:commentId", {
 
 ### Mutating the state tree in a Redux friendly fashion
 
-#### Store#POST - Creating data in the state tree
+#### Store#post - Creating data in the state tree
 
 Given the `state` held by a `store`:
 
@@ -62,7 +62,7 @@ Given the `state` held by a `store`:
 The following code creates a new comment object for the user at index `1` in the `users` list:
 
 ```js
-store.POST("/users/1/comments", {
+store.post("/users/1/comments", {
   text: "A brand new comment",
 })
 ```
@@ -78,7 +78,7 @@ Here's what the state after the mutation will look like:
 }
 ```
 
-#### Store#PUT - Completely updating a subtree
+#### Store#put - Completely updating a subtree
 
 Given the `state` held by a `store`:
 
@@ -94,7 +94,7 @@ Given the `state` held by a `store`:
 The following code updates the user at index `1` in the `users` list, by completely replacing its contents with the given data `{ name: "Ronaldo" }` and applying the validation/default values:
 
 ```js
-store.PUT("/users/1", {
+store.put("/users/1", {
   name: "Ronaldo",
 })
 ```
@@ -110,7 +110,7 @@ Here's what the state after the mutation will look like:
 }
 ```
 
-#### Store#PATCH - Partially updating a subtree
+#### Store#patch - Partially updating a subtree
 
 Given the `state` held by a `store`:
 
@@ -126,7 +126,7 @@ Given the `state` held by a `store`:
 The following code patches the text of the comment at index `0` in the `comments` list of the user at index `1` in the `users` list:
 
 ```js
-store.PATCH("/users/1/comments/0", {
+store.patch("/users/1/comments/0", {
   text: "Updated comment text",
 })
 ```
@@ -148,20 +148,20 @@ You are free to build your own domain specific API on top of `rest-store`. Say y
 
 ```js
 const createMemberApi = (store) => (path) => ({
-  merge: (data) => store.PATCH(path, data),
-  update: (data) => store.PUT(path, data),
-  delete: () => store.DELETE(path),
+  merge: (data) => store.patch(path, data),
+  update: (data) => store.put(path, data),
+  delete: () => store.delete(path),
 })
 
 const memberApiFor = createMemberApi(store)
 
 store.actions.users = {
-  add: (userData) => store.POST("/users", userData),
+  add: (userData) => store.post("/users", userData),
   at: (userIndex) => {
     return {
       ...memberApiFor(`/users/${userIndex}`),
       comments: {
-        add: (commentData) => store.POST(`/users/${userIndex}/comments`, commentData),
+        add: (commentData) => store.post(`/users/${userIndex}/comments`, commentData),
         at: (commentIndex) => {
           return memberApiFor(`${commentsPath}/${commentIndex}`)
         }

@@ -14,7 +14,7 @@ describe("Store", () => {
     })
   })
 
-  describe("#POST", () => {
+  describe("#post", () => {
     it("adds a new comment to the corresponding user", () => {
       const stateAfter = {
         users: [
@@ -24,7 +24,7 @@ describe("Store", () => {
         ]
       }
 
-      store.POST("/users/0/comments", {
+      store.post("/users/0/comments", {
         text: "LoL",
       })
 
@@ -32,7 +32,7 @@ describe("Store", () => {
     })
   })
 
-  describe("#PATCH", () => {
+  describe("#patch", () => {
     it("patches a given user's comment", () => {
       const stateAfter = {
         users: [
@@ -42,7 +42,7 @@ describe("Store", () => {
         ]
       }
 
-      store.PATCH("/users/2/comments/0", {
+      store.patch("/users/2/comments/0", {
         text: "Nice!"
       })
 
@@ -50,7 +50,7 @@ describe("Store", () => {
     })
   })
 
-  describe("#PUT", () => {
+  describe("#put", () => {
     it("updates a given user with a whole new content", () => {
       const stateAfter = {
         users: [
@@ -60,7 +60,7 @@ describe("Store", () => {
         ]
       }
 
-      store.PUT("/users/2", {
+      store.put("/users/2", {
         name: "Ronaldo",
       })
 
@@ -68,7 +68,7 @@ describe("Store", () => {
     })
   })
 
-  describe("#DELETE", () => {
+  describe("#delete", () => {
     it("deletes the corresponding user's comment", () => {
       const stateAfter = {
         users: [
@@ -78,7 +78,7 @@ describe("Store", () => {
         ]
       }
 
-      store.DELETE("/users/2/comments/0")
+      store.delete("/users/2/comments/0")
 
       expect(store.state).to.deep.equal(stateAfter)
     })
