@@ -109,4 +109,13 @@ describe("#resources", () => {
       expect(store.state).to.deep.equal(stateAfter)
     })
   })
+
+  describe("#map", () => {
+    it("maps over a list of resources", () => {
+      const usersNames = resources.users.map(user => user.fetch().name)
+      expect(usersNames).to.deep.equal([
+        "diego", "bibi", "ronaldo"
+      ])
+    })
+  })
 })
