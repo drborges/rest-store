@@ -1,6 +1,6 @@
 # rest-store
 
-This is an attempt to bring some of the restful concepts into `React`-like stores, in order to make it easier to manage application state tree in a `Redux` friendly fashion, yet, reducing boilerplate.
+This is an attempt to bring some of the restful concepts into `React`-like stores in order to make it easier to manage application state tree in a `Redux` friendly fashion and at the same time reduce boilerplate.
 
 ### Creating a New Store
 
