@@ -2,7 +2,7 @@
 
 This is an attempt to bring some of the restful concepts into `React`-like stores, in order to make it easier to manage application state tree in a `Redux` friendly fashion, yet, reducing boilerplate.
 
-### Creating a new store
+### Creating a New Store
 
 ```js
 store = new Store({
@@ -13,40 +13,15 @@ store = new Store({
 })
 ```
 
-### Defining Route Validations (TODO)
+### Mutating State: Make Redux Happy <3
 
-```js
-store.validate.post("/users", {
-  name: [
-    validations.string.required,
-    validations.length.min(3),
-  ],
-  comments: [
-    validations.array.default([]),
-  ]
-})
+There are essentially two ways to mutate state in `rest-store` and both are `Redux` friendly, where state is never mutated directly, but instead, a new state with all mutations applied is created.
 
-store.validate.put("/users/:userId", {
-  name: [
-    validations.string.required,
-    validations.length.min(3),
-  ],
-  comments: [
-    validations.array.default([]),
-  ]
-})
+### Mutations: Restful API
 
-store.validate.put("/users/:userId/comments/:commentId", {
-  text: [
-    validations.string.required,
-    validations.length.min(3),
-  ],
-})
-```
+This approach is based on Restful API abstractions, where restful operations are applied to resource paths, which, then, are mapped accordingly to subtrees in the state tree held by the `Store`.
 
-### Mutating the state tree in a Redux friendly fashion
-
-#### Store#post - Creating data in the state tree
+#### Store#post - Creating Data
 
 Given the `state` held by a `store`:
 
@@ -78,7 +53,7 @@ Here's what the state after the mutation will look like:
 }
 ```
 
-#### Store#put - Completely updating a subtree
+#### Store#put - Replacing Data
 
 Given the `state` held by a `store`:
 
@@ -110,7 +85,7 @@ Here's what the state after the mutation will look like:
 }
 ```
 
-#### Store#patch - Partially updating a subtree
+#### Store#patch - Merging Data
 
 Given the `state` held by a `store`:
 
@@ -142,7 +117,7 @@ Here's what the state after the mutation will look like:
 }
 ```
 
-#### Store#delete - Deleting Items
+#### Store#delete - Deleting Data
 
 Given the `state` held by a `store`:
 
@@ -192,7 +167,7 @@ const comment = store.get("/users/1/comments/0")
 => { text: "A brand new comment" }
 ```
 
-#### Store#map - Transforming Subtrees
+#### Store#map - Transforming Data
 
 Given the `state` held by a `store`:
 
@@ -231,63 +206,101 @@ Here's what the state after the mutation will look like:
 }
 ```
 
-### Creating a Model Driven API
+### Mutations: Resources API
 
-You are free to build your own domain specific API on top of `rest-store`. Say your application consists of users and each user may have a list of comments. The following code, provide a domain specific API which encapsulates `rest-store` operations, providing a simpler interface.
+This approach provides a method chaining interface built on top of ES6 Proxy, making mutations as easy as manipulating a regular javascript object.
+
+Consider the following `Store` for the next examples:
 
 ```js
-const createMemberApi = (store) => (path) => ({
-  merge: (data) => store.patch(path, data),
-  update: (data) => store.put(path, data),
-  delete: () => store.delete(path),
+store = new Store({
+  users: [
+    { name: "diego", comments: [] },
+    { name: "bibi", comments: [] },
+    { name: "ronaldo", comments: [{ text: "LoL", id: 123 }] },
+  ]
 })
+```
 
-const memberApiFor = createMemberApi(store)
+Adding new data into the store is simply a matter of setting values to javascript objects in the corresponding path of the state tree:
 
-store.actions.users = {
-  add: (userData) => store.post("/users", userData),
-  at: (userIndex) => {
-    return {
-      ...memberApiFor(`/users/${userIndex}`),
-      comments: {
-        add: (commentData) => store.post(`/users/${userIndex}/comments`, commentData),
-        at: (commentIndex) => {
-          return memberApiFor(`${commentsPath}/${commentIndex}`)
-        }
-      }
-  }
+```js
+store.resources().users[2].comments[0].text = "new comment text"
+```
+
+The code above is basically **setting** the `text` property of the comment at position `0` belonging to the user at the position `2` in the `users` list.
+
+Here's what the state will look like after the code above is executed:
+
+```js
+{
+  users: [
+    { name: "diego", comments: [] },
+    { name: "bibi", comments: [] },
+    { name: "ronaldo", comments: [{ text: "new comment text", id: 123 }] },
+  ]
 }
 ```
 
-In the coming future, there will be a generator that will spit out the actions API based off of the rest paths used to access data in the store. Here's how one would use the API:
-
-##### Adding new users
+Similarly, one may **push** new items into arrays, for example:
 
 ```js
-store.actions.users.add({
-  name: "diego",
-})
+store.resources().users[1].comments.push({ text: "a new comment" })
 ```
 
-##### Deleting an existing user
+The code above create a new state with the proper mutation applied:
 
 ```js
-store.actions.users.at(userIndex).delete()
+{
+  users: [
+    { name: "diego", comments: [] },
+    { name: "bibi", comments: [{ text: "a new comment" }] },
+    { name: "ronaldo", comments: [{ text: "new comment text", id: 123 }] },
+  ]
+}
 ```
 
-##### Adding a new comment to an existing user
+**Merging** data into existing object is as easy:
 
 ```js
-store.actions.users.at(userIndex).comments.add({
-  text: "Brand new comment",
-})
+store.resources().users[1].comments[0].merge({ id: 123 })
 ```
 
-##### Merging data to an existing comment of an existing user
+And the new state:
 
 ```js
-store.actions.users.at(userIndex).comments.at(commentIndex).merge({
-  id: 123,
-  text: "Updated comment text ",
-})
+{
+  users: [
+    { name: "diego", comments: [] },
+    { name: "bibi", comments: [{ text: "a new comment", id: 123 }] },
+    { name: "ronaldo", comments: [{ text: "new comment text", id: 123 }] },
+  ]
+}
+```
+
+Here's how you would go about **deleting** elements from a list:
+
+```js
+store.resources().users[1].comments[0].delete()
+// or
+delete store.resources().users[1].comments[0]
+```
+
+And the resulting state:
+
+```js
+{
+  users: [
+    { name: "diego", comments: [] },
+    { name: "bibi", comments: [] },
+    { name: "ronaldo", comments: [{ text: "new comment text", id: 123 }] },
+  ]
+}
+```
+
+You may also retrieve parts of the state tree:
+
+```js
+const firstComment = store.resources().users[2].comments[0].fetch()
+=> { text: "new comment text", id: 123 }
 ```
