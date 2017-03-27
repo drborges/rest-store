@@ -142,6 +142,95 @@ Here's what the state after the mutation will look like:
 }
 ```
 
+#### Store#delete - Deleting Items
+
+Given the `state` held by a `store`:
+
+```js
+{
+  users: [
+    { name: "diego", comments: [] },
+    { name: "bibi", comments: [{ text: "A brand new comment" }] },
+  ]
+}
+```
+
+The following code deletes the comment at index `0` in the `comments` list of the user at index `1` in the `users` list:
+
+```js
+store.delete("/users/1/comments/0")
+```
+
+Here's what the state after the mutation will look like:
+
+```js
+{
+  users: [
+    { name: "diego", comments: [] },
+    { name: "bibi", comments: [] },
+  ]
+}
+```
+
+#### Store#fetch - Fetching Data
+
+Given the `state` held by a `store`:
+
+```js
+{
+  users: [
+    { name: "diego", comments: [] },
+    { name: "bibi", comments: [{ text: "A brand new comment" }] },
+  ]
+}
+```
+
+The following code fetches the comment at index `0` in the `comments` list of the user at index `1` in the `users` list:
+
+```js
+const comment = store.fetch("/users/1/comments/0")
+=> { text: "A brand new comment" }
+```
+
+#### Store#map - Transforming Subtrees
+
+Given the `state` held by a `store`:
+
+```js
+{
+  users: [
+    { name: "diego", comments: [] },
+    { name: "bibi", comments: [{ text: "A brand new comment" }] },
+  ]
+}
+```
+
+The following code applies a mapping function to the comment at index `0` in the `comments` list of the user at index `1` in the `users` list:
+
+```js
+store.map("/users/1/comments/0", (comment) => ({
+  text: comment.text,
+  description: "Comment was transformed by a mapping function",
+}))
+```
+
+Here's what the state after the mutation will look like:
+
+```js
+{
+  users: [
+    { name: "diego", comments: [] },
+    { name: "bibi", comments: [
+        {
+          text: "A brand new comment",
+          description: "Comment was transformed by a mapping function",
+        }
+      ]
+    },
+  ]
+}
+```
+
 ### Creating a Model Driven API
 
 You are free to build your own domain specific API on top of `rest-store`. Say your application consists of users and each user may have a list of comments. The following code, provide a domain specific API which encapsulates `rest-store` operations, providing a simpler interface.
