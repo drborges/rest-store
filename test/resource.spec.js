@@ -88,23 +88,7 @@ describe("#resources", () => {
         ]
       }
 
-      resources.users[2].comments[0].delete()
-
-      expect(store.state).to.deep.equal(stateAfter)
-    })
-  })
-
-  describe("delete operator", () => {
-    it("deletes an existing comment from an existing user", () => {
-      const stateAfter = {
-        users: [
-          { name: "diego", comments: [] },
-          { name: "bibi", comments: [] },
-          { name: "ronaldo", comments: [] },
-        ]
-      }
-
-      delete resources.users[2].comments[0]
+      resources.users[2].comments.remove(0)
 
       expect(store.state).to.deep.equal(stateAfter)
     })
@@ -116,6 +100,13 @@ describe("#resources", () => {
       expect(usersNames).to.deep.equal([
         "diego", "bibi", "ronaldo"
       ])
+    })
+  })
+
+  describe("#slice", () => {
+    it("slices a resource collection", () => {
+      const lastTwoUsers = resources.users.slice(1)
+      expect(lastTwoUsers.val()).to.deep.equal(store.state.users.slice(1))
     })
   })
 
@@ -163,6 +154,14 @@ describe("#resources", () => {
       const [ diego, ...rest ] = resources.users
       expect(diego.val()).to.equal(store.state.users[0])
       expect(rest.val()).to.deep.equal(store.state.users.slice(1))
+    })
+
+    it("properly iterates over ...rest of list", () => {
+      const [ _, ...rest ] = resources.users
+      let index = 1
+      for (let item of rest) {
+        expect(item.val()).to.deep.equal(store.state.users[index++])
+      }
     })
   })
 })
