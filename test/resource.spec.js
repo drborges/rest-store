@@ -134,4 +134,35 @@ describe("#resources", () => {
       expect(store.state.users[2].comments[0].text).to.equal("new comment text")
     })
   })
+
+  describe("#Symbol.iterator", () => {
+    it("triggers mutations from within for .. of", () => {
+      const stateAfter = {
+        users: [
+          { name: "diego", comments: [{ text: "created from iterator"}] },
+          { name: "bibi", comments: [{ text: "created from iterator"}] },
+          { name: "ronaldo", comments: [{ text: "LoL", id: 123 }, { text: "created from iterator"}] },
+        ]
+      }
+
+      for (let user of resources.users) {
+        user.comments.push({ text: "created from iterator"})
+      }
+
+      expect(store.state).to.deep.equal(stateAfter)
+    })
+
+    it("destructs a resources list", () => {
+      const [ diego, bibi, ronaldo ] = resources.users
+      expect(diego.val()).to.equal(store.state.users[0])
+      expect(bibi.val()).to.equal(store.state.users[1])
+      expect(ronaldo.val()).to.equal(store.state.users[2])
+    })
+
+    it("supports spread operator on resources list", () => {
+      const [ diego, ...rest ] = resources.users
+      expect(diego.val()).to.equal(store.state.users[0])
+      expect(rest.val()).to.deep.equal(store.state.users.slice(1))
+    })
+  })
 })
