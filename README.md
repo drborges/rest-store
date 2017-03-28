@@ -298,9 +298,9 @@ And the resulting state:
 }
 ```
 
-You may also retrieve parts of the state tree:
+You may also retrieve the underlying value held by a resource:
 
 ```js
-const firstComment = store.resources().users[2].comments[0].fetch()
+const firstComment = store.resources().users[2].comments[0].val()
 => { text: "new comment text", id: 123 }
 ```

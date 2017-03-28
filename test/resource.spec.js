@@ -16,9 +16,9 @@ describe("#resources", () => {
     resources = store.resources()
   })
 
-  describe("#fetch", () => {
+  describe("#val", () => {
     it("retrieves an existing comment from an existing user", () => {
-      const comment = resources.users[2].comments[0].fetch()
+      const comment = resources.users[2].comments[0].val()
 
       expect(comment).to.deep.equal({ text: "LoL", id: 123 })
     })
@@ -112,7 +112,7 @@ describe("#resources", () => {
 
   describe("#map", () => {
     it("maps over a list of resources", () => {
-      const usersNames = resources.users.map(user => user.fetch().name)
+      const usersNames = resources.users.map(user => user.val().name)
       expect(usersNames).to.deep.equal([
         "diego", "bibi", "ronaldo"
       ])
