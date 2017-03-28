@@ -99,6 +99,13 @@ describe("Store", () => {
   })
 
   describe("#get", () => {
+    it("gets the whole state from store", () => {
+      const expectedSubtree = store.state
+      const subtree = store.get("/")
+
+      expect(subtree).to.deep.equal(expectedSubtree)
+    })
+
     it("gets subtree from store for the given path", () => {
       const expectedSubtree = { text: "LoL", id: 123 }
       const subtree = store.get("/users/2/comments/0")
