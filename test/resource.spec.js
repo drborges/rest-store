@@ -25,7 +25,7 @@ describe("#resources", () => {
   })
 
   describe("#=", () => {
-    it("sets the contents of an existing comment", () => {
+    it("sets the contents of an existing resource member", () => {
       const stateAfter = {
         users: [
           { name: "diego", comments: [] },
@@ -37,6 +37,20 @@ describe("#resources", () => {
       resources.users[1].comments[0] = {
         text: "new comment",
       }
+
+      expect(store.state).to.deep.equal(stateAfter)
+    })
+
+    it("sets the contents of an existing resource collection", () => {
+      const stateAfter = {
+        users: [
+          { name: "diego", comments: [] },
+        ]
+      }
+
+      resources.users = [
+        { name: "diego", comments: [] },
+      ]
 
       expect(store.state).to.deep.equal(stateAfter)
     })
@@ -78,8 +92,8 @@ describe("#resources", () => {
     })
   })
 
-  describe("#delete", () => {
-    it("deletes an existing comment from an existing user", () => {
+  describe("#remove", () => {
+    it("removes an existing comment from an existing user", () => {
       const stateAfter = {
         users: [
           { name: "diego", comments: [] },
