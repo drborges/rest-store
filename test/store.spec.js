@@ -185,6 +185,18 @@ describe("Store", () => {
     })
   })
 
+  describe("#parent", () => {
+    it("returns the resource's parent resource", () => {
+      const secondUser = store.resources.users[1].comments[0].parent().parent()
+      expect(store.resources.users[1].val()).to.deep.equal(secondUser.val())
+    })
+
+    it("returns an undefined parent for the root resource", () => {
+      const rootParent = store.resources.parent()
+      expect(rootParent).to.be.undefined
+    })
+  })
+
   describe("#subscribe", () => {
     it("notifies listeners upon state mutations", () => {
       const stateAfter = {
