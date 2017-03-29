@@ -1,17 +1,18 @@
 import { expect } from "chai"
+import deepFreeze from "deep-freeze"
 import createStore from "../lib/store"
 
 describe("Store", () => {
   let store
 
   beforeEach(() => {
-    store = createStore({
+    store = createStore(deepFreeze({
       users: [
         { name: "diego", comments: [] },
         { name: "bibi", comments: [] },
         { name: "ronaldo", comments: [{ text: "LoL", id: 123 }] },
       ]
-    })
+    }))
   })
 
   describe("#val", () => {
