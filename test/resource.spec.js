@@ -103,6 +103,13 @@ describe("#resources", () => {
     })
   })
 
+  describe("#filter", () => {
+    it("filters elements from a resource collection", () => {
+      const filtered = resources.users.filter(user => user.name === "bibi")
+      expect(filtered.val()).to.deep.equal(store.state.users.slice(1, 1))
+    })
+  })
+
   describe("#slice", () => {
     it("slices a resource collection", () => {
       const lastTwoUsers = resources.users.slice(1)
