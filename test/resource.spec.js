@@ -1,11 +1,11 @@
 import { expect } from "chai"
-import Store from "../lib/store"
+import createStore from "../lib/store"
 
 describe("#resources", () => {
   let store, resources
 
   beforeEach(() => {
-    store = new Store({
+    store = createStore({
       users: [
         { name: "diego", comments: [] },
         { name: "bibi", comments: [] },
@@ -38,7 +38,7 @@ describe("#resources", () => {
         text: "new comment",
       }
 
-      expect(store.state).to.deep.equal(stateAfter)
+      expect(store.state()).to.deep.equal(stateAfter)
     })
 
     it("sets the contents of an existing resource collection", () => {
@@ -52,7 +52,7 @@ describe("#resources", () => {
         { name: "diego", comments: [] },
       ]
 
-      expect(store.state).to.deep.equal(stateAfter)
+      expect(store.state()).to.deep.equal(stateAfter)
     })
   })
 
@@ -70,7 +70,7 @@ describe("#resources", () => {
         text: "new comment",
       })
 
-      expect(store.state).to.deep.equal(stateAfter)
+      expect(store.state()).to.deep.equal(stateAfter)
     })
   })
 
@@ -88,7 +88,7 @@ describe("#resources", () => {
         description: "more data in the comment",
       })
 
-      expect(store.state).to.deep.equal(stateAfter)
+      expect(store.state()).to.deep.equal(stateAfter)
     })
   })
 
@@ -104,7 +104,7 @@ describe("#resources", () => {
 
       resources.users[2].comments.remove(0)
 
-      expect(store.state).to.deep.equal(stateAfter)
+      expect(store.state()).to.deep.equal(stateAfter)
     })
   })
 
@@ -120,14 +120,14 @@ describe("#resources", () => {
   describe("#filter", () => {
     it("filters elements from a resource collection", () => {
       const filtered = resources.users.filter(user => user.name === "bibi")
-      expect(filtered.val()).to.deep.equal(store.state.users.slice(1, 1))
+      expect(filtered.val()).to.deep.equal(store.state().users.slice(1, 1))
     })
   })
 
   describe("#slice", () => {
     it("slices a resource collection", () => {
       const lastTwoUsers = resources.users.slice(1)
-      expect(lastTwoUsers.val()).to.deep.equal(store.state.users.slice(1))
+      expect(lastTwoUsers.val()).to.deep.equal(store.state().users.slice(1))
     })
   })
 
@@ -141,9 +141,9 @@ describe("#resources", () => {
       lastUser.name = "giulianna"
       lastUserComment.text = "new comment text"
 
-      expect(store.state.users[0].name).to.equal("hernando")
-      expect(store.state.users[2].name).to.equal("giulianna")
-      expect(store.state.users[2].comments[0].text).to.equal("new comment text")
+      expect(store.state().users[0].name).to.equal("hernando")
+      expect(store.state().users[2].name).to.equal("giulianna")
+      expect(store.state().users[2].comments[0].text).to.equal("new comment text")
     })
   })
 
@@ -161,27 +161,27 @@ describe("#resources", () => {
         user.comments.push({ text: "created from iterator"})
       }
 
-      expect(store.state).to.deep.equal(stateAfter)
+      expect(store.state()).to.deep.equal(stateAfter)
     })
 
     it("destructs a resources list", () => {
       const [ diego, bibi, ronaldo ] = resources.users
-      expect(diego.val()).to.equal(store.state.users[0])
-      expect(bibi.val()).to.equal(store.state.users[1])
-      expect(ronaldo.val()).to.equal(store.state.users[2])
+      expect(diego.val()).to.equal(store.state().users[0])
+      expect(bibi.val()).to.equal(store.state().users[1])
+      expect(ronaldo.val()).to.equal(store.state().users[2])
     })
 
     it("supports spread operator on resources list", () => {
       const [ diego, ...rest ] = resources.users
-      expect(diego.val()).to.equal(store.state.users[0])
-      expect(rest.val()).to.deep.equal(store.state.users.slice(1))
+      expect(diego.val()).to.equal(store.state().users[0])
+      expect(rest.val()).to.deep.equal(store.state().users.slice(1))
     })
 
     it("properly iterates over ...rest of list", () => {
       const [ _, ...rest ] = resources.users
       let index = 1
       for (let item of rest) {
-        expect(item.val()).to.deep.equal(store.state.users[index++])
+        expect(item.val()).to.deep.equal(store.state().users[index++])
       }
     })
   })

@@ -1,11 +1,11 @@
 import { expect } from "chai"
-import Store from "../lib/store"
+import createStore from "../lib/store"
 
 describe("Store", () => {
   let store
 
   beforeEach(() => {
-    store = new Store({
+    store = createStore({
       users: [
         { name: "diego", comments: [] },
         { name: "bibi", comments: [] },
@@ -28,7 +28,7 @@ describe("Store", () => {
         text: "LoL",
       })
 
-      expect(store.state).to.deep.equal(stateAfter)
+      expect(store.state()).to.deep.equal(stateAfter)
     })
   })
 
@@ -46,7 +46,7 @@ describe("Store", () => {
         text: "Nice!"
       })
 
-      expect(store.state).to.deep.equal(stateAfter)
+      expect(store.state()).to.deep.equal(stateAfter)
     })
   })
 
@@ -64,7 +64,7 @@ describe("Store", () => {
         name: "Ronaldo",
       })
 
-      expect(store.state).to.deep.equal(stateAfter)
+      expect(store.state()).to.deep.equal(stateAfter)
     })
 
     it("updates the name of a given user", () => {
@@ -78,7 +78,7 @@ describe("Store", () => {
 
       store.put("/users/2/name", "hernando")
 
-      expect(store.state).to.deep.equal(stateAfter)
+      expect(store.state()).to.deep.equal(stateAfter)
     })
   })
 
@@ -94,13 +94,13 @@ describe("Store", () => {
 
       store.delete("/users/2/comments/0")
 
-      expect(store.state).to.deep.equal(stateAfter)
+      expect(store.state()).to.deep.equal(stateAfter)
     })
   })
 
   describe("#get", () => {
     it("gets the whole state from store", () => {
-      const expectedSubtree = store.state
+      const expectedSubtree = store.state()
       const subtree = store.get("/")
 
       expect(subtree).to.deep.equal(expectedSubtree)
@@ -138,7 +138,7 @@ describe("Store", () => {
         }
       })
 
-      expect(store.state).to.deep.equal(stateAfter)
+      expect(store.state()).to.deep.equal(stateAfter)
     })
   })
 
@@ -178,6 +178,13 @@ describe("Store", () => {
 
       store.put("/users/2/name", "matheus")
       expect(notifiedState).to.deep.equal(stateAfter)
+    })
+  })
+
+  describe("#state", () => {
+    it("returns a deep frozen copy of the internal state", () => {
+      const stateCopy = store.state()
+      expect(() => stateCopy.users[0].name = "jose").to.throw(TypeError)
     })
   })
 })

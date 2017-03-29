@@ -12,6 +12,7 @@
     "spec": "mocha --require test/spec.helper.js test/*.spec.js test/**/*.spec.js"
   },
   "dependencies": {
+    "deep-freeze": "^0.0.1",
     "immutability-helper": "^2.1.2",
     "react": "^15.4.2",
     "react-dom": "^15.4.2"
