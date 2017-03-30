@@ -198,7 +198,7 @@ describe("Store", () => {
   })
 
   describe("#subscribe", () => {
-    it("notifies listeners upon state mutations", () => {
+    it("notifies listeners upon state mutations", (done) => {
       const stateAfter = {
         users: [
           { name: "diego", comments: [] },
@@ -207,11 +207,72 @@ describe("Store", () => {
         ]
       }
 
-      let actualState = {}
-      store.subscribe(state => { actualState = state })
+      store.subscribe(state => {
+        expect(state).to.deep.equal(stateAfter)
+        done()
+      })
 
       store.resources.users[2].comments.remove(0)
-      expect(actualState).to.deep.equal(stateAfter)
+    })
+
+    it("subscribes to post events on a simple path", (done) => {
+      const newUser = { name: "Maria" }
+
+      store.subscribe.post("/users", (user) => {
+        expect(user).to.deep.equal(newUser)
+        done()
+      })
+
+      store.resources.users.push(newUser)
+    })
+
+    it("subscribes to post events on a path with wildcards", (done) => {
+      const newComment = { text: "Nice it works!" }
+
+      store.subscribe.post("/users/.*/comments", (comment) => {
+        expect(comment).to.deep.equal(newComment)
+        done()
+      })
+
+      store.resources.users[0].comments.push(newComment)
+    })
+
+    it("subscribes to put events on a simple path", (done) => {
+      store.subscribe.put("/users", (users) => {
+        expect(users).to.deep.equal([])
+        done()
+      })
+
+      store.resources.users = []
+    })
+
+    it("subscribes to put events on a path with wildcards", (done) => {
+      const data = { text: "Nice it works!" }
+
+      store.subscribe.put("/users/.*/comments/.*", (comment) => {
+        expect(comment).to.deep.equal(data)
+        done()
+      })
+
+      store.resources.users[2].comments[0] = data
+    })
+
+    it("subscribes to patch events on a path with wildcards", (done) => {
+      store.subscribe.patch("/users/.*/comments/.*", (comment) => {
+        expect(comment).to.deep.equal({ id: 321, text: "LoL" })
+        done()
+      })
+
+      store.resources.users[2].comments[0].merge({ id: 321 })
+    })
+
+    it("subscribes to delete events on a path with wildcards", (done) => {
+      store.subscribe.delete("/users/.*/comments", (comment) => {
+        expect(comment).to.deep.equal({ id: 123, text: "LoL" })
+        done()
+      })
+
+      store.resources.users[2].comments.remove(0)
     })
 
     it("unsubscribes listener from the store", () => {
