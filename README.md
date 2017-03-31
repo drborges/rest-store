@@ -2,50 +2,145 @@
 
 State management made with ❤️.
 
-State management is nowadays one of the challenges faced by Javascript developers. There are pretty good solutions out there such as `Redux` and `MobX`.
-
-
-
-# Overview
-
-# Examples
-
-# Subscription System
-
-Subscribe a listener to **any** state change in the store. This is the integration point with React Apps.
+# Components
 
 ```js
-store.subscribe(state => console.log(state))
-```
+class Store {}
 
-Subscribing to **post** events on a particular **path**:
+const store = new Store({
+  users: [
+    { name: "Diego" },
+    { name: "Bianca" },
+  ]
+})
 
-```js
-store.subscribe.post("/users/:userIndex/comments", (comment, params) => {
+const diego = store.state.users[0]
+// => new ObjectMutator(store, new Path("users", "0"))
+
+const users = store.state.users
+// => new ArrayMutator(store, new Path("users", "0"))
+
+diego.name = "Diego Borges"
+// => triggers store mutation at /users/0/name
+
+
+store.state.on("update", state => console.log(state))
+
+store.state.users["."].comments.on("create", (comment) => {
+  console.log("new comment", comment)
+})
+
+store.state.users["."].comments.on("remove", (comment) => {
+  console.log("new comment", comment)
 })
 ```
 
-Subscribing to **put** events on a particular **path**:
-
 ```js
-store.subscribe.put("/users/:userIndex/comments/:commentId", (comment, params) => {
-})
+class Subscription {}
+
+const subscription = new Subscription(new Path("users", ".", "comments", "0"), subscriber)
+
+subscription.accept(new Path("users", "1", "comments", "0"))
+// => true
+
+subscription.accept(new Path("users", "1", "comments", "1"))
+// => false
+
+subscription.notify(data)
+// => subscriber(data)
 ```
 
-Subscribing to **patch** events on a particular **path**:
-
 ```js
-store.subscribe.patch("/users/:userIndex/comments/:commentId", (comment, params) => {
-})
+@Cached
+class Path {}
+
+const path = new Path("users", "0", "comments")
+path.match(new Path("users", "0", "comments"))
+// => true
+path.match(new Path("users", ".", "comments"))
+// => true
+path.match(new Path("users", "1", "comments"))
+// => false
+path.next("1")
+// => new Path("users", "0", "comments", "1")
+path.parent()
+// => new Path("users", "0", "comments")
 ```
 
-Subscribing to **delete** events on a particular **path**:
-
 ```js
-store.subscribe.delete("/users/:userIndex/comments/:commentId", (comment, params) => {
-})
+@Abstract
+class Mutator {}
 ```
 
-# Contributing
+```js
+@Cached
+@ObjectProxy
+class ValueMutator extends Mutator {}
 
-# License
+const name = new ObjectMutator(store, new Path("users", "0", "name"))
+
+name.get()
+// => "Diego"
+
+name.set("Diego Borges")
+// => {
+//   users: [
+//     { name: "Diego Borges" },
+//     { name: "Bianca" },
+//   ]
+// }
+```
+
+```js
+@Cached
+@ObjectProxy
+class ObjectMutator extends Mutator {}
+
+const diego = new ObjectMutator(store, new Path("users", "0"))
+diego.get()
+// => { name: "Diego" }
+
+diego.name.get()
+// => "Diego"
+
+// causes a mutation to the path /users/0/name, yielding a new state but keeping all paths not affected by this mutation:
+diego.name = "Diego Borges"
+// => {
+//   users: [
+//     { name: "Diego Borges" },
+//     { name: "Bianca" },
+//   ]
+// }
+
+// Similarly you could:
+diego.name.set("Diego Borges")
+```
+
+```js
+@Cached
+@ArrayProxy
+class ArrayMutator extends Mutator {}
+
+const users = new ArrayMutator(store, new Path("users"))
+
+users.get()
+// => [
+//      { name: "Diego" },
+//      { name: "Bianca" },
+//    ]
+
+// causes a mutation to the path /users
+users.push({ name: "Hernando" })
+// => [
+//      { name: "Diego" },
+//      { name: "Bianca" },
+//      { name: "Hernando" },
+//    ]
+
+// causes a mutation to the path /users
+users.remove(0)
+// => [
+//      { name: "Bianca" },
+//      { name: "Hernando" },
+//    ]
+```
