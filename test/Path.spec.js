@@ -1,7 +1,3 @@
-// @flow
-declare var describe: any
-declare var it: any
-
 import { expect } from "chai"
 import Path from "../src/Path"
 
