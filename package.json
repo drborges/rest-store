@@ -9,7 +9,8 @@
     "build": "./node_modules/webpack/bin/webpack.js --config webpack.config.js",
     "build:watch": "./node_modules/webpack/bin/webpack.js --config webpack.config.js --watch",
     "serve": "./node_modules/webpack-dev-server/bin/webpack-dev-server.js",
-    "spec": "mocha test/*.spec.js test/**/*.spec.js"
+    "test": "mocha",
+    "test:watch": "mocha -w"
   },
   "dependencies": {
     "react": "^15.4.2",
@@ -30,6 +31,7 @@
     "chai-enzyme": "^0.6.1",
     "enzyme": "^2.8.0",
     "flow-bin": "^0.42.0",
+    "growl": "^1.9.2",
     "jsdom": "^9.12.0",
     "mocha": "^3.2.0",
     "react-addons-test-utils": "^15.4.2",
