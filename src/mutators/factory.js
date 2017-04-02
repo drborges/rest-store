@@ -2,63 +2,32 @@ import { ValueMutator } from "./ValueMutator"
 import { ArrayMutator } from "./ArrayMutator"
 import { ObjectMutator } from "./ObjectMutator"
 
-const defaultConfig = {
-  chainable: true,
+// There is some improvement room over here. It would be interesting if a user
+// could create their own data types, and custom data mutator with a domain
+// specific API.
+const factory = {
+  [Array]: createArrayMutator,
+  [Object]: createObjectMutator,
+  [String]: createValueMutator,
+  [Number]: createValueMutator,
+  [Boolean]: createValueMutator,
 }
-
-const proxyHandler = (store, path, config = defaultConfig) => ({
-  get(target, prop, receiver) {
-    if (prop.toString() === "set") {
-      return (value) => store.put(path, value)
-    }
-
-    if (prop.toString() === "get") {
-      return () => store.get(path)
-    }
-
-    if (target[prop]) {
-      return target[prop]
-    }
-
-    if (!config.chainable) {
-      return false
-    }
-
-    return createMutator(store, path.child(prop))
-  },
-
-  set(target, prop, value, receiver) {
-    store.put(path.child(prop), value)
-    return true
-  }
-})
 
 export function createMutator(store, path): Mutator {
   const currentValue = path.walk(store.state)
-
-  if (currentValue instanceof Array) {
-    return createArrayMutator(store, path)
-  }
-
-  if (currentValue instanceof Object) {
-    return createObjectMutator(store, path)
-  }
-
-  return createValueMutator(store, path)
+  return factory[currentValue.constructor](store, path)
 }
 
-export const createArrayMutator = (store, path) => {
-  return new Proxy(new ArrayMutator(store, path), proxyHandler(store, path))
+export function createArrayMutator(store, path) {
+  return new Proxy({}, new ArrayMutator(store, path))
 }
 
-export const createValueMutator = (store, path) => {
-  return new Proxy(new ValueMutator(store, path), proxyHandler(store, path, {
-    chainable: false,
-  }))
+export function createValueMutator(store, path) {
+  return new Proxy({}, new ValueMutator(store, path))
 }
 
-export const createObjectMutator = (store, path) => {
-  return new Proxy(new ObjectMutator(store, path), proxyHandler(store, path))
+export function createObjectMutator(store, path) {
+  return new Proxy({}, new ObjectMutator(store, path))
 }
 
 export default {

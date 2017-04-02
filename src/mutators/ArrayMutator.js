@@ -6,6 +6,7 @@ export class ArrayMutator extends Mutator {
   constructor(store: Store, path: Path, view = store.get(path).map((_, i) => i)) {
     super(store, path)
     this.view = view
+    this.length = this.view.length
   }
 
   push(data) {
