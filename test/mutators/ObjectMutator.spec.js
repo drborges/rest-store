@@ -3,7 +3,7 @@ import deepFreeze from "deep-freeze"
 
 import Path from "../../src/Path"
 import Store from "../../src/Store"
-import { ObjectMutator } from "../../src/mutators"
+import Factory from "../../src/mutators/Factory"
 
 describe("ObjectMutator", () => {
   let store
@@ -20,7 +20,7 @@ describe("ObjectMutator", () => {
   describe("#set", () => {
     it("triggers a store mutation for a child path", () => {
       const path = new Path("users", 0)
-      const userMutator = new ObjectMutator(store, path)
+      const userMutator = Factory.createObjectMutator(store, path)
 
       userMutator.name = "Borges"
 
@@ -32,7 +32,7 @@ describe("ObjectMutator", () => {
 
     it("triggers a store mutation deep in the path", () => {
       const path = new Path("users", 1)
-      const userMutator = new ObjectMutator(store, path)
+      const userMutator = Factory.createObjectMutator(store, path)
 
       userMutator.comments[0].text = "Sweet!"
 
@@ -48,7 +48,7 @@ describe("ObjectMutator", () => {
   describe("#get", () => {
     it("fetches underlying value from store", () => {
       const path = new Path("users", 1)
-      const userMutator = new ObjectMutator(store, path)
+      const userMutator = Factory.createObjectMutator(store, path)
 
       const user = userMutator.get()
 

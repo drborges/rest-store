@@ -3,7 +3,7 @@ import deepFreeze from "deep-freeze"
 
 import Path from "../../src/Path"
 import Store from "../../src/Store"
-import { ArrayMutator } from "../../src/mutators"
+import Factory from "../../src/mutators/Factory"
 
 describe("ArrayMutator", () => {
   let store
@@ -20,7 +20,7 @@ describe("ArrayMutator", () => {
   describe("#push", () => {
     it("triggers a store mutation by pushing a new item to an array", () => {
       const path = new Path("users")
-      const mutator = new ArrayMutator(store, path)
+      const mutator = Factory.createArrayMutator(store, path)
 
       mutator.push({ name: "Hernando", comments: [] })
 
@@ -35,14 +35,14 @@ describe("ArrayMutator", () => {
 
     it("triggers a store mutation by pushing a new item to an array deep in the state tree", () => {
       const path = new Path("users")
-      const usersMutator = new ArrayMutator(store, path)
+      const usersMutator = Factory.createArrayMutator(store, path)
 
-      usersMutator[1].comments.push({ text: "New comment" })
+      usersMutator[0].comments.push({ text: "New comment" })
 
       expect(store.state).to.deep.equal({
         users: [
-          { name: "Diego", comments: [] },
-          { name: "Bianca", comments: [{ text: "Nice!" }, { text: "New comment" }] },
+          { name: "Diego", comments: [{ text: "New comment" }] },
+          { name: "Bianca", comments: [{ text: "Nice!" }] },
         ]
       })
     })
@@ -51,7 +51,7 @@ describe("ArrayMutator", () => {
   describe("@@iterator", () => {
     it("allows using mutator within a for .. of loop", () => {
       const path = new Path("users")
-      const usersMutator = new ArrayMutator(store, path)
+      const usersMutator = Factory.createArrayMutator(store, path)
 
       for (let user of usersMutator) {
         user.active = true
@@ -69,7 +69,7 @@ describe("ArrayMutator", () => {
   describe("#get", () => {
     it("fetches underlying value from store", () => {
       const path = new Path("users")
-      const mutator = new ArrayMutator(store, path)
+      const mutator = Factory.createArrayMutator(store, path)
 
       const users = mutator.get()
 
