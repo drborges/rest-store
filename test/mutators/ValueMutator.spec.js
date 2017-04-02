@@ -1,8 +1,8 @@
 import { expect } from "chai"
 
-import Path from "../src/Path"
-import Store from "../src/Store"
-import ValueMutator from "../src/ValueMutator"
+import Path from "../../src/Path"
+import Store from "../../src/Store"
+import { ValueMutator } from "../../src/mutators"
 
 describe("ValueMutator", () => {
   let store
@@ -18,7 +18,7 @@ describe("ValueMutator", () => {
 
   describe("#set", () => {
     it("triggers a mutation in the store", () => {
-      const userNamePath = new Path("users", "0", "name")
+      const userNamePath = new Path("users", 0, "name")
       const nameMutator = new ValueMutator(store, userNamePath)
 
       nameMutator.set("Borges")
@@ -29,7 +29,7 @@ describe("ValueMutator", () => {
 
   describe("#get", () => {
     it("fetches underlying value from store", () => {
-      const userNamePath = new Path("users", "1", "name")
+      const userNamePath = new Path("users", 1, "name")
       const nameMutator = new ValueMutator(store, userNamePath)
 
       const name = nameMutator.get()
@@ -40,8 +40,8 @@ describe("ValueMutator", () => {
 
   describe("cache", () => {
     it("caches value mutator to avoid memory leaks", () => {
-      const mutator1 = new ValueMutator({}, new Path("users", "0", "name"))
-      const mutator2 = new ValueMutator({}, new Path("users", "0", "name"))
+      const mutator1 = new ValueMutator({}, new Path("users", 0, "name"))
+      const mutator2 = new ValueMutator({}, new Path("users", 0, "name"))
 
       expect(mutator1).to.equal(mutator2)
     })
