@@ -37,13 +37,4 @@ describe("ValueMutator", () => {
       expect(name).to.equal("Bianca")
     })
   })
-
-  describe("cache", () => {
-    it("caches value mutator to avoid memory leaks", () => {
-      const mutator1 = new ValueMutator({}, new Path("users", 0, "name"))
-      const mutator2 = new ValueMutator({}, new Path("users", 0, "name"))
-
-      expect(mutator1).to.equal(mutator2)
-    })
-  })
 })

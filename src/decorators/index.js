@@ -1,2 +1,2 @@
+export { Proxyable } from "./Proxyable"
 export { CachedBy } from "./CachedBy"
-export { CachedProxyBy } from "./CachedProxyBy"

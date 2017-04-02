@@ -1,12 +1,12 @@
 import Path from "../Path"
-import createMutator from "./factory"
 import Mutator from "./Mutator"
-import { CachedProxyBy } from "../decorators"
+import createMutator from "./factory"
+import { Proxyable } from "../decorators"
 
 // TODO:
 // 1. Follow up on https://github.com/babel/babel/pull/5020
 // That PR would allow "export default" + decorators
-@CachedProxyBy((store, path) => path.toString())
+@Proxyable
 export class ObjectMutator extends Mutator {
   constructor(store: Store, path: Path) {
     super(store, path)
