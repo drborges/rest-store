@@ -1,19 +1,6 @@
-// @flow
+import { CachedBy } from "./decorators"
 
-function Cached(Target: Class<Path>) {
-  const cache: { [string]: Path } = {}
-
-  return class {
-    constructor(...path: string[]) {
-      const key = path.toString()
-      if (cache[key]) return cache[key]
-      cache[key] = new Target(...path)
-      return cache[key]
-    }
-  }
-}
-
-@Cached
+@CachedBy((...path) => path.toString())
 export default class Path {
   nodes: string[]
 

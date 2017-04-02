@@ -1,20 +1,8 @@
 import Path from "./Path"
 import Mutator from "./Mutator"
+import { CachedProxyBy } from "./decorators"
 
-function CachedProxy(Target: Class<Mutator>): Proxy {
-  const cache: { [string]: Mutator } = {}
-
-  return class {
-    constructor(store: Store, path: Path) {
-      const key = path.toString()
-      if (cache[key]) return cache[key]
-      cache[key] = new Proxy({}, new Target(store, path))
-      return cache[key]
-    }
-  }
-}
-
-@CachedProxy
+@CachedProxyBy((store, path) => path.toString())
 export default class ValueMutator extends Mutator {
   constructor(store: Store, path: Path) {
     super(store, path)

@@ -5,6 +5,7 @@ describe("Path", () => {
   describe("#toString", () => {
     it("overrides #toString() with a more readable output", () => {
       const path = new Path("users", "0", "comments")
+
       expect(path.toString()).to.equal("/users/0/comments")
     })
   })
@@ -13,6 +14,7 @@ describe("Path", () => {
     it("creates a child path", () => {
       const path = new Path("users", "0")
       const child = path.child("comments")
+
       expect(child.toString()).to.equal("/users/0/comments")
     })
   })
@@ -21,20 +23,23 @@ describe("Path", () => {
     it("creates a parent path", () => {
       const path = new Path("users", "0", "comments")
       const parent = path.parent()
+
       expect(parent.toString()).to.equal("/users/0")
     })
   })
 
-  describe("@Cached", () => {
+  describe("cache", () => {
     it("caches path instances to avoid memory leaks", () => {
       const path1 = new Path("users", "0", "comments")
       const path2 = new Path("users", "0", "comments")
+
       expect(path1).to.equal(path2)
     })
 
     it("different paths are different objects", () => {
       const path1 = new Path("users", "0", "comments")
       const path2 = new Path("users", "1", "comments")
+
       expect(path1).to.not.equal(path2)
     })
   })
@@ -43,12 +48,14 @@ describe("Path", () => {
     it("matches a given path", () => {
       const path1 = new Path("users", "0", "comments")
       const path2 = new Path("users", ".", "comments")
+
       expect(path1.match(path2)).to.be.true
     })
 
     it("does not match a given path", () => {
       const path1 = new Path("users", "0", "comments")
       const path2 = new Path("users", ".")
+
       expect(path1.match(path2)).to.be.false
     })
   })
