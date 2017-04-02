@@ -55,4 +55,19 @@ describe("ObjectMutator", () => {
       expect(user).to.deep.equal(store.get(path))
     })
   })
+
+  describe("#merge", () => {
+    it("triggers a store mutation for a child path by merging extra data", () => {
+      const path = new Path("users", 0)
+      const userMutator = Factory.createObjectMutator(store, path)
+
+      userMutator.merge({ age: 31 })
+
+      expect(store.get(path)).to.deep.equal({
+        name: "Diego",
+        age: 31,
+        comments: [],
+      })
+    })
+  })
 })
