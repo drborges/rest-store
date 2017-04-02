@@ -1,5 +1,6 @@
 --require babel-polyfill
 --require test/spec.helper.js
 --reporter spec
+--recursive
 --ui bdd
 --growl
