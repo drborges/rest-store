@@ -7,7 +7,8 @@ const actions = {
   delete: (index) => ({ $splice: [[index, 1]] }),
 }
 
-const applyMutation = (state, reversedPathNodes, operation) => {
+const applyMutation = (state, path, operation) => {
+  const reversedPathNodes = path.reversedNodes()
   const mutation = reversedPathNodes.reduce((mutation, key) => ({ [key]: mutation }), operation)
   return update(state, mutation)
 }
@@ -26,18 +27,18 @@ export default class Store {
   }
 
   put(path, value) {
-    this.state = applyMutation(this.state, path.reversedNodes(), actions.set(value))
+    this.state = applyMutation(this.state, path, actions.set(value))
   }
 
   patch(path, value) {
-    this.state = applyMutation(this.state, path.reversedNodes(), actions.merge(value))
+    this.state = applyMutation(this.state, path, actions.merge(value))
   }
 
   map(path, fn) {
-    this.state = applyMutation(this.state, path.reversedNodes(), actions.map(fn))
+    this.state = applyMutation(this.state, path, actions.map(fn))
   }
 
   delete(path, index) {
-    this.state = applyMutation(this.state, path.reversedNodes(), actions.delete(index))
+    this.state = applyMutation(this.state, path, actions.delete(index))
   }
 }
