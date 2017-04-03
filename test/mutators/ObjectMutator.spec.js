@@ -36,7 +36,7 @@ describe("ObjectMutator", () => {
 
       userMutator.comments[0].text = "Sweet!"
 
-      expect(store.state).to.deep.equal({
+      expect(store.get(new Path)).to.deep.equal({
         users: [
           { name: "Diego", comments: [] },
           { name: "Bianca", comments: [{ text: "Sweet!" }] },

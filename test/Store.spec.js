@@ -3,6 +3,7 @@ import { expect } from "chai"
 
 import Path from "../src/Path"
 import Store from "../src/Store"
+import { ObjectMutator } from "../src/mutators"
 
 describe("Store", () => {
   let store
@@ -18,7 +19,7 @@ describe("Store", () => {
 
   describe("#get", () => {
     it("retrieve the current state for the root path", () => {
-      const state = store.get(new Path())
+      const state = store.get(new Path)
 
       expect(state).to.deep.equal({
         users: [
@@ -84,6 +85,36 @@ describe("Store", () => {
       store.delete(path, 0)
 
       expect(store.get(path.child(0))).to.be.undefined
+    })
+  })
+
+  describe("#state", () => {
+    describe("accessing data", () => {
+      it("exposes state as a mutator implementation", () => {
+        expect(store.state.get()).to.deep.equal({
+          users: [
+            { name: "Diego", comments: [] },
+            { name: "Bianca", comments: [{ text: "Nice!" }] },
+          ]
+        })
+      })
+
+      it("retrieves state subtree", () => {
+        expect(store.state.users[1].name.get()).to.equal("Bianca")
+      })
+    })
+
+    describe("mutating data", () => {
+      it("exposes state as a mutator implementation", () => {
+        store.state.users[0].comments.push({ text: "Sweet!" })
+
+        expect(store.state.get()).to.deep.equal({
+          users: [
+            { name: "Diego", comments: [{ text: "Sweet!" }] },
+            { name: "Bianca", comments: [{ text: "Nice!" }] },
+          ]
+        })
+      })
     })
   })
 })

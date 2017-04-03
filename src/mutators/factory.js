@@ -1,3 +1,5 @@
+import Path from "../Path"
+
 import { ValueMutator } from "./ValueMutator"
 import { ArrayMutator } from "./ArrayMutator"
 import { ObjectMutator } from "./ObjectMutator"
@@ -16,7 +18,8 @@ const factory = {
 }
 
 export function createMutator(store, path, view): Mutator {
-  const currentValue = path.walk(store.state)
+  const state = store.get(Path.root)
+  const currentValue = path.walk(state)
   const Mutator = factory[currentValue && currentValue.constructor]
   return new Mutator(store, path, view)
 }

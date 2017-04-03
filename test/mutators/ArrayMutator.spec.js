@@ -31,7 +31,7 @@ describe("ArrayMutator", () => {
 
       mutator.push({ name: "Hernando", comments: [] })
 
-      expect(store.state).to.deep.equal({
+      expect(store.get(new Path)).to.deep.equal({
         users: [
           { name: "Diego", comments: [] },
           { name: "Bianca", comments: [{ text: "Nice!" }] },
@@ -46,7 +46,7 @@ describe("ArrayMutator", () => {
 
       usersMutator[0].comments.push({ text: "New comment" })
 
-      expect(store.state).to.deep.equal({
+      expect(store.get(new Path)).to.deep.equal({
         users: [
           { name: "Diego", comments: [{ text: "New comment" }] },
           { name: "Bianca", comments: [{ text: "Nice!" }] },
@@ -64,7 +64,7 @@ describe("ArrayMutator", () => {
         user.active = true
       }
 
-      expect(store.state).to.deep.equal({
+      expect(store.get(new Path)).to.deep.equal({
         users: [
           { name: "Diego", active: true, comments: [] },
           { name: "Bianca", active: true, comments: [{ text: "Nice!" }] },

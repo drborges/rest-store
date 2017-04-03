@@ -2,11 +2,14 @@ import { CachedBy } from "./decorators"
 
 @CachedBy((...nodes) => nodes.toString())
 export default class Path {
+  static root = new Path
+
   nodes: string[]
 
   constructor(...nodes: string[]) {
     this.nodes = nodes
   }
+
 
   child(node: string): Path {
     return new Path(...[...this.nodes, node])

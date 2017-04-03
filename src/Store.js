@@ -1,4 +1,6 @@
 import update from "immutability-helper"
+import Path from "./Path"
+import { createMutator } from "./mutators"
 
 const actions = {
   map: (fn) => ({ $apply: fn }),
@@ -15,30 +17,34 @@ const applyMutation = (state, path, operation) => {
 
 export default class Store {
   constructor(state = {}) {
-    this.state = state
+    this._state = state
+  }
+
+  get state() {
+    return createMutator(this, Path.root)
   }
 
   get(path) {
     try {
-      return path.walk(this.state)
+      return path.walk(this._state)
     } catch(e) {
       throw `404: Path ${path} is not valid`
     }
   }
 
   put(path, value) {
-    this.state = applyMutation(this.state, path, actions.set(value))
+    this._state = applyMutation(this._state, path, actions.set(value))
   }
 
   patch(path, value) {
-    this.state = applyMutation(this.state, path, actions.merge(value))
+    this._state = applyMutation(this._state, path, actions.merge(value))
   }
 
   map(path, fn) {
-    this.state = applyMutation(this.state, path, actions.map(fn))
+    this._state = applyMutation(this._state, path, actions.map(fn))
   }
 
   delete(path, index) {
-    this.state = applyMutation(this.state, path, actions.delete(index))
+    this._state = applyMutation(this._state, path, actions.delete(index))
   }
 }
