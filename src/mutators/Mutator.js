@@ -1,4 +1,4 @@
-import Factory from "./Factory"
+import { createMutator } from "./Factory"
 
 export default class Mutator {
   constructor(store: Store, path: Path, chainable = true) {
@@ -25,7 +25,7 @@ export default class Mutator {
       return true
     }
 
-    return Factory.createMutator(this.store, this.path.child(prop))
+    return createMutator(this.store, this.path.child(prop))
   }
 
   set(target, prop, value, receiver) {

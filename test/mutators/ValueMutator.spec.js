@@ -2,7 +2,7 @@ import { expect } from "chai"
 
 import Path from "../../src/Path"
 import Store from "../../src/Store"
-import Factory from "../../src/mutators/Factory"
+import { ValueMutator } from "../../src/mutators"
 
 describe("ValueMutator", () => {
   let store
@@ -19,7 +19,7 @@ describe("ValueMutator", () => {
   describe("#set", () => {
     it("triggers a mutation in the store", () => {
       const userNamePath = new Path("users", 0, "name")
-      const nameMutator = Factory.createValueMutator(store, userNamePath)
+      const nameMutator = new ValueMutator(store, userNamePath)
 
       nameMutator.set("Borges")
 
@@ -30,7 +30,7 @@ describe("ValueMutator", () => {
   describe("#get", () => {
     it("fetches underlying value from store", () => {
       const userNamePath = new Path("users", 1, "name")
-      const nameMutator = Factory.createValueMutator(store, userNamePath)
+      const nameMutator = new ValueMutator(store, userNamePath)
 
       const name = nameMutator.get()
 

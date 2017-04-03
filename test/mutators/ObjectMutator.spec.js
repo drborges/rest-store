@@ -3,7 +3,7 @@ import deepFreeze from "deep-freeze"
 
 import Path from "../../src/Path"
 import Store from "../../src/Store"
-import Factory from "../../src/mutators/Factory"
+import { ObjectMutator } from "../../src/mutators"
 
 describe("ObjectMutator", () => {
   let store
@@ -20,7 +20,7 @@ describe("ObjectMutator", () => {
   describe("#set", () => {
     it("triggers a store mutation for a child path", () => {
       const path = new Path("users", 0)
-      const userMutator = Factory.createObjectMutator(store, path)
+      const userMutator = new ObjectMutator(store, path)
 
       userMutator.name = "Borges"
 
@@ -32,7 +32,7 @@ describe("ObjectMutator", () => {
 
     it("triggers a store mutation deep in the path", () => {
       const path = new Path("users", 1)
-      const userMutator = Factory.createObjectMutator(store, path)
+      const userMutator = new ObjectMutator(store, path)
 
       userMutator.comments[0].text = "Sweet!"
 
@@ -48,7 +48,7 @@ describe("ObjectMutator", () => {
   describe("#get", () => {
     it("fetches underlying value from store", () => {
       const path = new Path("users", 1)
-      const userMutator = Factory.createObjectMutator(store, path)
+      const userMutator = new ObjectMutator(store, path)
 
       const user = userMutator.get()
 
@@ -59,7 +59,7 @@ describe("ObjectMutator", () => {
   describe("#merge", () => {
     it("triggers a store mutation for a child path by merging extra data", () => {
       const path = new Path("users", 0)
-      const userMutator = Factory.createObjectMutator(store, path)
+      const userMutator = new ObjectMutator(store, path)
 
       userMutator.merge({ age: 31 })
 
@@ -74,7 +74,7 @@ describe("ObjectMutator", () => {
   describe("@@iterator", () => {
     it("supports for .. of loop", () => {
       const path = new Path("users", 0)
-      const mutator = Factory.createObjectMutator(store, path)
+      const mutator = new ObjectMutator(store, path)
 
       for (let [prop, value] of mutator) {
         const storeVal = store.get(path.child(prop))
@@ -86,7 +86,7 @@ describe("ObjectMutator", () => {
     })
 
     it("supports destructuring", () => {
-      const mutator = Factory.createObjectMutator(store, new Path("users", 0))
+      const mutator = new ObjectMutator(store, new Path("users", 0))
       const { name, comments } = mutator
 
       expect(name.get()).to.equal("Diego")
@@ -94,7 +94,7 @@ describe("ObjectMutator", () => {
     })
 
     it("supports spread operator", () => {
-      const mutator = Factory.createObjectMutator(store, new Path("users", 0))
+      const mutator = new ObjectMutator(store, new Path("users", 0))
       const keyValues = [...mutator]
 
       expect(keyValues[0][0]).to.equal("name")

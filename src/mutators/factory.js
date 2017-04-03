@@ -6,35 +6,17 @@ import { ObjectMutator } from "./ObjectMutator"
 // could create their own data types, and custom data mutator with a domain
 // specific API.
 const factory = {
-  [Array]: createArrayMutator,
-  [Object]: createObjectMutator,
-  [String]: createValueMutator,
-  [Number]: createValueMutator,
-  [Boolean]: createValueMutator,
-  [undefined]: createValueMutator,
+  [Array]: ArrayMutator,
+  [Object]: ObjectMutator,
+  [String]: ValueMutator,
+  [Number]: ValueMutator,
+  [Boolean]: ValueMutator,
+  // TODO: implement an UndefinedMutator to handle errors.
+  [undefined]: ValueMutator,
 }
 
-export function createMutator(store, path): Mutator {
+export function createMutator(store, path, view): Mutator {
   const currentValue = path.walk(store.state)
-  const create = factory[currentValue && currentValue.constructor]
-  return create && create(store, path) || createObjectMutator(store, path)
-}
-
-export function createArrayMutator(store, path, view) {
-  return new Proxy([], new ArrayMutator(store, path, view))
-}
-
-export function createValueMutator(store, path) {
-  return new Proxy({}, new ValueMutator(store, path))
-}
-
-export function createObjectMutator(store, path) {
-  return new Proxy({}, new ObjectMutator(store, path))
-}
-
-export default {
-  createMutator,
-  createArrayMutator,
-  createValueMutator,
-  createObjectMutator,
+  const Mutator = factory[currentValue && currentValue.constructor]
+  return new Mutator(store, path, view)
 }

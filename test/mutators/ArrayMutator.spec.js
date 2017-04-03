@@ -3,7 +3,7 @@ import deepFreeze from "deep-freeze"
 
 import Path from "../../src/Path"
 import Store from "../../src/Store"
-import Factory from "../../src/mutators/Factory"
+import { ArrayMutator } from "../../src/mutators"
 
 describe("ArrayMutator", () => {
   let store
@@ -19,7 +19,7 @@ describe("ArrayMutator", () => {
 
   describe("instanceof", () => {
     it("is an instance of Array", () => {
-      const mutator = Factory.createArrayMutator(store, new Path("users"))
+      const mutator = new ArrayMutator(store, new Path("users"))
       expect(mutator).to.be.an.instanceof(Array)
     })
   })
@@ -27,7 +27,7 @@ describe("ArrayMutator", () => {
   describe("#push", () => {
     it("triggers a store mutation by pushing a new item to an array", () => {
       const path = new Path("users")
-      const mutator = Factory.createArrayMutator(store, path)
+      const mutator = new ArrayMutator(store, path)
 
       mutator.push({ name: "Hernando", comments: [] })
 
@@ -42,7 +42,7 @@ describe("ArrayMutator", () => {
 
     it("triggers a store mutation by pushing a new item to an array deep in the state tree", () => {
       const path = new Path("users")
-      const usersMutator = Factory.createArrayMutator(store, path)
+      const usersMutator = new ArrayMutator(store, path)
 
       usersMutator[0].comments.push({ text: "New comment" })
 
@@ -58,7 +58,7 @@ describe("ArrayMutator", () => {
   describe("@@iterator", () => {
     it("allows using mutator within a for .. of loop", () => {
       const path = new Path("users")
-      const usersMutator = Factory.createArrayMutator(store, path)
+      const usersMutator = new ArrayMutator(store, path)
 
       for (let user of usersMutator) {
         user.active = true
@@ -74,10 +74,10 @@ describe("ArrayMutator", () => {
 
     it("supports spread operator", () => {
       const path = new Path("users")
-      const usersMutator = Factory.createArrayMutator(store, path)
+      const usersMutator = new ArrayMutator(store, path)
       const [head, ...tail] = usersMutator
-
-      expect(head.get()).to.deep.equal({
+      const val = head.get()
+      expect(val).to.deep.equal({
         name: "Diego", comments: [],
       })
 
@@ -90,7 +90,7 @@ describe("ArrayMutator", () => {
   describe("#get", () => {
     it("fetches underlying value from store", () => {
       const path = new Path("users")
-      const mutator = Factory.createArrayMutator(store, path)
+      const mutator = new ArrayMutator(store, path)
 
       const users = mutator.get()
 

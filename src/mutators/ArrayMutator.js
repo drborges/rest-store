@@ -1,7 +1,9 @@
 import Path from "../Path"
 import Mutator from "./Mutator"
-import Factory from "./Factory"
+import { createMutator } from "./Factory"
+import { ProxiedAs } from "../decorators"
 
+@ProxiedAs(Array)
 export class ArrayMutator extends Mutator {
   constructor(store: Store, path: Path, view = store.get(path).map((_, i) => i)) {
     super(store, path)
@@ -18,7 +20,7 @@ export class ArrayMutator extends Mutator {
 
   slice(begin, end) {
     const view = this.view.slice(begin, end)
-    return Factory.createArrayMutator(this.store, this.path, view)
+    return createMutator(this.store, this.path, view)
   }
 
   getter() {
@@ -27,7 +29,7 @@ export class ArrayMutator extends Mutator {
 
   *[Symbol.iterator]() {
     for (let index of this.view) {
-      yield Factory.createMutator(this.store, this.path.child(index))
+      yield createMutator(this.store, this.path.child(index))
     }
   }
 }

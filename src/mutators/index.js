@@ -1,4 +1,4 @@
-export { Factory } from "./Factory"
+export { createMutator } from "./Factory"
 export { Mutator } from "./Mutator"
 export { ValueMutator } from "./ValueMutator"
 export { ArrayMutator } from "./ArrayMutator"

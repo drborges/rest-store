@@ -1,7 +1,9 @@
 import Path from "../Path"
 import Mutator from "./Mutator"
-import Factory from "./Factory"
+import { createMutator } from "./Factory"
+import { ProxiedAs } from "../decorators"
 
+@ProxiedAs(Object)
 export class ObjectMutator extends Mutator {
   constructor(store: Store, path: Path) {
     super(store, path)
@@ -14,7 +16,7 @@ export class ObjectMutator extends Mutator {
   *[Symbol.iterator]() {
     const value = this.store.get(this.path)
     for (let prop in value) {
-      const mutator = Factory.createMutator(this.store, this.path.child(prop))
+      const mutator = createMutator(this.store, this.path.child(prop))
       yield [prop, mutator]
     }
   }
