@@ -16,6 +16,15 @@ export class ArrayMutator extends Mutator {
     ])
   }
 
+  slice(begin, end) {
+    const view = this.view.slice(begin, end)
+    return Factory.createArrayMutator(this.store, this.path, view)
+  }
+
+  getter() {
+    return this.store.get(this.path).filter((_, i) => this.view.includes(i))
+  }
+
   *[Symbol.iterator]() {
     for (let index of this.view) {
       yield Factory.createMutator(this.store, this.path.child(index))

@@ -64,6 +64,20 @@ describe("ArrayMutator", () => {
         ]
       })
     })
+
+    it("supports spread operator", () => {
+      const path = new Path("users")
+      const usersMutator = Factory.createArrayMutator(store, path)
+      const [head, ...tail] = usersMutator
+
+      expect(head.get()).to.deep.equal({
+        name: "Diego", comments: [],
+      })
+
+      expect(tail.get()).to.deep.equal([
+        { name: "Bianca", comments: [{ text: "Nice!" }] },
+      ])
+    })
   })
 
   describe("#get", () => {

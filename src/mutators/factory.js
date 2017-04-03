@@ -11,15 +11,17 @@ const factory = {
   [String]: createValueMutator,
   [Number]: createValueMutator,
   [Boolean]: createValueMutator,
+  [undefined]: createValueMutator,
 }
 
 export function createMutator(store, path): Mutator {
   const currentValue = path.walk(store.state)
-  return factory[currentValue.constructor](store, path)
+  const create = factory[currentValue && currentValue.constructor]
+  return create(store, path)
 }
 
-export function createArrayMutator(store, path) {
-  return new Proxy({}, new ArrayMutator(store, path))
+export function createArrayMutator(store, path, view) {
+  return new Proxy([], new ArrayMutator(store, path, view))
 }
 
 export function createValueMutator(store, path) {

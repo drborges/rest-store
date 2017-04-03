@@ -8,12 +8,13 @@ export default class Mutator {
   }
 
   get(target, prop, receiver) {
-    if (prop.toString() === "set") {
-      return (value) => this.store.put(this.path, value)
+    const propName = prop.toString()
+    if (propName === "set") {
+      return this.setter
     }
 
-    if (prop.toString() === "get") {
-      return () => this.store.get(this.path)
+    if (propName === "get") {
+      return this.getter
     }
 
     if (this[prop]) {
@@ -30,5 +31,13 @@ export default class Mutator {
   set(target, prop, value, receiver) {
     this.store.put(this.path.child(prop), value)
     return true
+  }
+
+  getter() {
+    return this.store.get(this.path)
+  }
+
+  setter(value) {
+    this.store.put(this.path, value)
   }
 }
