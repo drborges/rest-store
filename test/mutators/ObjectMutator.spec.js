@@ -70,4 +70,37 @@ describe("ObjectMutator", () => {
       })
     })
   })
+
+  describe("@@iterator", () => {
+    it("supports for .. of loop", () => {
+      const path = new Path("users", 0)
+      const mutator = Factory.createObjectMutator(store, path)
+
+      for (let [prop, value] of mutator) {
+        const storeVal = store.get(path.child(prop))
+        const propVal = mutator[prop].get()
+
+        expect(propVal).to.deep.equal(storeVal)
+        expect(propVal).to.deep.equal(value.get())
+      }
+    })
+
+    it("supports destructuring", () => {
+      const mutator = Factory.createObjectMutator(store, new Path("users", 0))
+      const { name, comments } = mutator
+
+      expect(name.get()).to.equal("Diego")
+      expect(comments.get()).to.be.empty
+    })
+
+    it("supports spread operator", () => {
+      const mutator = Factory.createObjectMutator(store, new Path("users", 0))
+      const keyValues = [...mutator]
+
+      expect(keyValues[0][0]).to.equal("name")
+      expect(keyValues[0][1].get()).to.equal("Diego")
+      expect(keyValues[1][0]).to.equal("comments")
+      expect(keyValues[1][1].get()).to.deep.equal([])
+    })
+  })
 })

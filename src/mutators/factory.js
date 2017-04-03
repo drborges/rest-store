@@ -17,7 +17,7 @@ const factory = {
 export function createMutator(store, path): Mutator {
   const currentValue = path.walk(store.state)
   const create = factory[currentValue && currentValue.constructor]
-  return create(store, path)
+  return create && create(store, path) || createObjectMutator(store, path)
 }
 
 export function createArrayMutator(store, path, view) {

@@ -40,4 +40,8 @@ export default class Mutator {
   setter(value) {
     this.store.put(this.path, value)
   }
+
+  toString() {
+    `${this.get()}`
+  }
 }
