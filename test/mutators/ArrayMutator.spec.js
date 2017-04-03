@@ -17,6 +17,13 @@ describe("ArrayMutator", () => {
     }))
   })
 
+  describe("instanceof", () => {
+    it("is an instance of Array", () => {
+      const mutator = Factory.createArrayMutator(store, new Path("users"))
+      expect(mutator).to.be.an.instanceof(Array)
+    })
+  })
+
   describe("#push", () => {
     it("triggers a store mutation by pushing a new item to an array", () => {
       const path = new Path("users")
