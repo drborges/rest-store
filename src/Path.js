@@ -25,11 +25,13 @@ export default class Path {
     return this.nodes.reduce((data, node) => data[node], obj)
   }
 
-  reversedNodes(): string[] {
-    return [...this.nodes].reverse()
-  }
-
   toString(): string {
     return `/${this.nodes.join("/")}`
+  }
+
+  *[Symbol.iterator]() {
+    for (const node of this.nodes) {
+      yield node
+    }
   }
 }

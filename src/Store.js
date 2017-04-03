@@ -8,7 +8,7 @@ const actions = {
 }
 
 const applyMutation = (state, path, operation) => {
-  const reversedPathNodes = path.reversedNodes()
+  const reversedPathNodes = [...path].reverse()
   const mutation = reversedPathNodes.reduce((mutation, key) => ({ [key]: mutation }), operation)
   return update(state, mutation)
 }

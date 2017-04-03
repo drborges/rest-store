@@ -84,11 +84,22 @@ describe("Path", () => {
     })
   })
 
-  describe("#reversedNodes", () => {
-    it("returns the current path nodes in the reverse order", () => {
-      const reversed = new Path("users", 0, "name").reversedNodes()
+  describe("@@iterator", () => {
+    it("implements the iterator protocol", () => {
+      const nodes = []
+      const path = new Path("users", 0, "name")
 
-      expect(reversed).to.deep.equal(["name", 0, "users"])
+      for (const node of path) {
+        nodes.push(node)
+      }
+
+      expect(nodes).to.deep.equal(["users", 0, "name"])
+    })
+
+    it("desctructs path into nodes", () => {
+      const [head, ...tail] = new Path("users", 0, "name")
+      expect(head).to.equal("users")
+      expect(tail).to.deep.equal([0, "name"])
     })
   })
 })
