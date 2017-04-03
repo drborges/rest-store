@@ -1,6 +1,6 @@
 import { CachedBy } from "./decorators"
 
-@CachedBy((...path) => path.toString())
+@CachedBy((...nodes) => nodes.toString())
 export default class Path {
   nodes: string[]
 
