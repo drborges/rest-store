@@ -37,4 +37,11 @@ describe("ValueMutator", () => {
       expect(name).to.equal("Bianca")
     })
   })
+
+  describe("Symbol.toStringTag", () => {
+    it("overrides the toString behavior", () => {
+      const mutator = new ValueMutator(store, new Path("users", 0, "name"))
+      expect(mutator.toString()).to.equal("[object ValueMutator(/users/0/name)]")
+    })
+  })
 })

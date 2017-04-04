@@ -41,7 +41,7 @@ export default class Mutator {
     this.store.put(this.path, value)
   }
 
-  toString() {
-    `${this.get()}`
-  }
+  get [Symbol.toStringTag]() {
+   return `${this.constructor.name}(${this.path})`;
+ }
 }

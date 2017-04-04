@@ -103,4 +103,11 @@ describe("ObjectMutator", () => {
       expect(keyValues[1][1].get()).to.deep.equal([])
     })
   })
+
+  describe("Symbol.toStringTag", () => {
+    it("overrides the toString behavior", () => {
+      const mutator = new ObjectMutator(store, new Path("users", 0, "name"))
+      expect(mutator.toString()).to.equal("[object ObjectMutator(/users/0/name)]")
+    })
+  })
 })

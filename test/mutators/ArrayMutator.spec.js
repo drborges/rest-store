@@ -97,4 +97,11 @@ describe("ArrayMutator", () => {
       expect(users).to.deep.equal(store.get(path))
     })
   })
+
+  describe("Symbol.toStringTag", () => {
+    it("overrides the toString behavior", () => {
+      const mutator = new ArrayMutator(store, new Path("users", 0, "comments"))
+      expect(mutator.toString()).to.equal("[object ArrayMutator(/users/0/comments)]")
+    })
+  })
 })
