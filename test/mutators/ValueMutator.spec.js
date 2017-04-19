@@ -1,14 +1,27 @@
 import { expect } from "chai"
 
 import Path from "../../src/Path"
-import Store from "../../src/Store"
+import RestStore from "../../src/RestStore"
 import { ValueMutator } from "../../src/mutators"
 
+type User = {
+  name: string,
+  comments: Comment[],
+}
+
+type Comment = {
+  text: string,
+}
+
+type MyState = {|
+  users: User[],
+|}
+
 describe("ValueMutator", () => {
-  let store
+  let store: RestStore<MyState>
 
   beforeEach(() => {
-    store = new Store({
+    store = new RestStore({
       users: [
         { name: "Diego", comments: [] },
         { name: "Bianca", comments: [{ text: "Nice!" }] },

@@ -2,14 +2,27 @@ import { expect } from "chai"
 import deepFreeze from "deep-freeze"
 
 import Path from "../../src/Path"
-import Store from "../../src/Store"
+import RestStore from "../../src/RestStore"
 import { ObjectMutator } from "../../src/mutators"
 
+type User = {
+  name: string,
+  comments: Comment[],
+}
+
+type Comment = {
+  text: string,
+}
+
+type MyState = {|
+  users: User[],
+|}
+
 describe("ObjectMutator", () => {
-  let store
+  let store: RestStore<MyState>
 
   beforeEach(() => {
-    store = new Store(deepFreeze({
+    store = new RestStore(deepFreeze({
       users: [
         { name: "Diego", comments: [] },
         { name: "Bianca", comments: [{ text: "Nice!" }] },
@@ -62,7 +75,6 @@ describe("ObjectMutator", () => {
       const userMutator = new ObjectMutator(store, path)
 
       userMutator.merge({ age: 31 })
-
       expect(store.get(path)).to.deep.equal({
         name: "Diego",
         age: 31,

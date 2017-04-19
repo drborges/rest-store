@@ -1,23 +1,22 @@
+// @flow
+
+import type RestStore from "../RestStore"
+
 import Path from "../Path"
 
 import { ValueMutator } from "./ValueMutator"
 import { ArrayMutator } from "./ArrayMutator"
 import { ObjectMutator } from "./ObjectMutator"
 
-// There is some improvement room over here. It would be interesting if a user
-// could create their own data types, and custom data mutator with a domain
-// specific API.
 const factory = {
-  [Array]: ArrayMutator,
-  [Object]: ObjectMutator,
-  [String]: ValueMutator,
-  [Number]: ValueMutator,
-  [Boolean]: ValueMutator,
-  // TODO: implement an UndefinedMutator to handle errors.
-  [undefined]: ValueMutator,
+  [Array.toString()]: ArrayMutator,
+  [Object.toString()]: ObjectMutator,
+  [String.toString()]: ValueMutator,
+  [Number.toString()]: ValueMutator,
+  [Boolean.toString()]: ValueMutator,
 }
 
-export function createMutator(store, path, view): Mutator {
+export function createMutator<T: Object>(store: RestStore<T>, path: Path, view: ?number[]): Proxy<T> & T {
   const state = store.get(Path.root)
   const currentValue = path.walk(state)
   const Mutator = factory[currentValue && currentValue.constructor]

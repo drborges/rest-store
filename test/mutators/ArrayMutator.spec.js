@@ -2,14 +2,27 @@ import { expect } from "chai"
 import deepFreeze from "deep-freeze"
 
 import Path from "../../src/Path"
-import Store from "../../src/Store"
+import RestStore from "../../src/RestStore"
 import { ArrayMutator } from "../../src/mutators"
 
+type User = {
+  name: string,
+  comments: Comment[],
+}
+
+type Comment = {
+  text: string,
+}
+
+type MyState = {|
+  users: User[],
+|}
+
 describe("ArrayMutator", () => {
-  let store
+  let store: RestStore<MyState>
 
   beforeEach(() => {
-    store = new Store(deepFreeze({
+    store = new RestStore(deepFreeze({
       users: [
         { name: "Diego", comments: [] },
         { name: "Bianca", comments: [{ text: "Nice!" }] },

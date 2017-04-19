@@ -1,17 +1,20 @@
+// @flow
+
+import type { PathNode } from "./types"
+
 import { CachedBy } from "./decorators"
 
-@CachedBy((...nodes) => nodes.toString())
+@CachedBy((...nodes: PathNode[]) => nodes.toString())
 export default class Path {
   static root = new Path
 
-  nodes: string[]
+  nodes: PathNode[]
 
-  constructor(...nodes: string[]) {
+  constructor(...nodes: PathNode[]) {
     this.nodes = nodes
   }
 
-
-  child(node: string): Path {
+  child(node: PathNode): Path {
     return new Path(...[...this.nodes, node])
   }
 
@@ -24,7 +27,7 @@ export default class Path {
     return pattern.test(this.toString())
   }
 
-  walk(obj: any): any {
+  walk(obj: Object|any[]): any {
     return this.nodes.reduce((data, node) => data[node], obj)
   }
 
@@ -32,7 +35,7 @@ export default class Path {
     return `/${this.nodes.join("/")}`
   }
 
-  *[Symbol.iterator]() {
+  *[Symbol.iterator](): Iterable<PathNode> {
     for (const node of this.nodes) {
       yield node
     }

@@ -4,6 +4,53 @@ State management made with ❤️.
 
 # Components
 
+Mutator = ArrayMutator | ObjectMutator | ValueMutator
+MutationPath = Path
+
+```js
+@Mutator
+class Store<T> {
+  constructor(initialState: T) {
+    this.state = initialState
+  }
+}
+
+type MyState = {
+  users: User[],
+  network: {
+    activity: "idle" | "busy",
+    retries: number,
+  },
+}
+
+const store = new reflux.Store<MyState>({
+  users: [{ name: "diego" }],
+  network: {
+    activity: "idle",
+    retries: 3,
+  }
+})
+
+store.subscribe((state, event) => event.path; event.action)
+store.catch((error, event) => )
+
+try {
+  const user = await store.state.users.push({ name: "bianca" })
+  const response = await api.users.create(user)
+  if (response.status !== 201) {
+    throw new Error(response.message)
+  }
+} catch(e) {
+  store.state.users.delete(user)
+}
+
+// => notifies subscribers
+store.state.users[0].name = "borges"
+// => notifies subscribers
+store.state.users.push(api.users.create({ name: "ronaldo" }))
+// => notifies subscribers
+```
+
 ```js
 class Store {}
 

@@ -1,4 +1,8 @@
-export const CachedBy = (resolver) => (Target) => {
+// @flow
+
+import type { CacheKeyResolver } from "../types"
+
+export const CachedBy = (resolver: CacheKeyResolver) => (Target: Class<any>) => {
   const cache: { [string]: any } = {}
 
   return class {

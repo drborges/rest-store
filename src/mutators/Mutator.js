@@ -1,13 +1,22 @@
+// @flow
+
+import type RestStore from "../RestStore"
+import type Path from "../Path"
+
 import { createMutator } from "./Factory"
 
-export default class Mutator {
-  constructor(store: Store, path: Path, chainable = true) {
+export default class Mutator<T: Object> {
+  path: Path
+  store: RestStore<T>
+  chainable: boolean
+
+  constructor(store: RestStore<T>, path: Path, chainable: boolean = true) {
     this.store = store
     this.path = path
     this.chainable = chainable
   }
 
-  get(target, prop, receiver) {
+  get(target: Object, prop: string, receiver: Object) {
     const propName = prop.toString()
     if (propName === "set") {
       return this.setter
@@ -28,7 +37,7 @@ export default class Mutator {
     return createMutator(this.store, this.path.child(prop))
   }
 
-  set(target, prop, value, receiver) {
+  set(target: Object, prop: string, value: any, receiver: Object) {
     this.store.put(this.path.child(prop), value)
     return true
   }
@@ -37,7 +46,7 @@ export default class Mutator {
     return this.store.get(this.path)
   }
 
-  setter(value) {
+  setter(value: T) {
     this.store.put(this.path, value)
   }
 
