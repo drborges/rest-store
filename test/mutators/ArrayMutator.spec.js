@@ -89,23 +89,23 @@ describe("ArrayMutator", () => {
       const path = new Path("users")
       const usersMutator = new ArrayMutator(store, path)
       const [head, ...tail] = usersMutator
-      const val = head.get()
-      expect(val).to.deep.equal({
+
+      expect(head.$get).to.deep.equal({
         name: "Diego", comments: [],
       })
 
-      expect(tail.get()).to.deep.equal([
+      expect(tail.$get).to.deep.equal([
         { name: "Bianca", comments: [{ text: "Nice!" }] },
       ])
     })
   })
 
-  describe("#get", () => {
+  describe("#$get", () => {
     it("fetches underlying value from store", () => {
       const path = new Path("users")
       const mutator = new ArrayMutator(store, path)
 
-      const users = mutator.get()
+      const users = mutator.$get
 
       expect(users).to.deep.equal(store.get(path))
     })

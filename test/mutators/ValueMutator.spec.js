@@ -45,7 +45,7 @@ describe("ValueMutator", () => {
       const userNamePath = new Path("users", 1, "name")
       const nameMutator = new ValueMutator(store, userNamePath)
 
-      const name = nameMutator.get()
+      const name = nameMutator.$value
 
       expect(name).to.equal("Bianca")
     })

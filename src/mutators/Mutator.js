@@ -22,10 +22,6 @@ export default class Mutator<T: Object> {
       return this.setter
     }
 
-    if (propName === "get") {
-      return this.getter
-    }
-
     if (this[prop]) {
       return this[prop]
     }
@@ -42,7 +38,7 @@ export default class Mutator<T: Object> {
     return true
   }
 
-  getter() {
+  get $get(): T {
     return this.store.get(this.path)
   }
 

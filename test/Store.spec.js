@@ -113,7 +113,7 @@ describe("Store", () => {
       })
 
       it("retrieves state subtree", () => {
-        expect(store.state.users[1].name.get()).to.equal("Bianca")
+        expect(store.state.users[1].name.$get).to.equal("Bianca")
       })
     })
 
