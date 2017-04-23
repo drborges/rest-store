@@ -4,7 +4,7 @@ import type RestStore from "../RestStore"
 
 import Path from "../Path"
 import Mutator from "./Mutator"
-import { createMutator } from "./Factory"
+import { createMutator } from "./createMutator"
 import { ProxiedAs } from "../decorators"
 
 @ProxiedAs(Object)

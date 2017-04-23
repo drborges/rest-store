@@ -3,31 +3,22 @@
 import type RestStore from "../RestStore"
 import type Path from "../Path"
 
-import { createMutator } from "./Factory"
+import { createMutator } from "./createMutator"
 
 export default class Mutator<T: Object> {
   path: Path
   store: RestStore<T>
-  chainable: boolean
 
-  constructor(store: RestStore<T>, path: Path, chainable: boolean = true) {
+  constructor(store: RestStore<T>, path: Path) {
     this.store = store
     this.path = path
-    this.chainable = chainable
   }
 
   get(target: Object, prop: string, receiver: Object) {
     const propName = prop.toString()
-    if (propName === "set") {
-      return this.setter
-    }
 
     if (this[prop]) {
       return this[prop]
-    }
-
-    if (!this.chainable) {
-      return true
     }
 
     return createMutator(this.store, this.path.child(prop))
@@ -40,10 +31,6 @@ export default class Mutator<T: Object> {
 
   get $get(): T {
     return this.store.get(this.path)
-  }
-
-  setter(value: T) {
-    this.store.put(this.path, value)
   }
 
   get [Symbol.toStringTag]() {

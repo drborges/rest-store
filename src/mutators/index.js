@@ -1,5 +1,4 @@
-export { createMutator } from "./Factory"
+export { createMutator } from "./createMutator"
 export { Mutator } from "./Mutator"
-export { ValueMutator } from "./ValueMutator"
 export { ArrayMutator } from "./ArrayMutator"
 export { ObjectMutator } from "./ObjectMutator"
