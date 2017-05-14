@@ -1,15 +1,24 @@
+const path = require("path")
+
 module.exports = {
   devtool: "eval-source-map",
-  entry: ["babel-polyfill", "./app/index.jsx"],
+  entry: [
+    "babel-polyfill",
+    path.resolve("src", "index.js"),
+  ],
   output: {
-    filename: "bundle.js"
+    filename: "bundle.js",
   },
   resolve: {
     extensions: [".js", ".jsx"]
   },
   module: {
-    loaders: [
-      { test: /\.js|\.jsx$/, exclude: /node_modules/, loader: "babel-loader" }
+    rules: [
+      {
+        test: /\.js|\.jsx$/,
+        exclude: /node_modules/,
+        use: [{ loader: "babel-loader" }],
+      },
     ]
   }
 }
