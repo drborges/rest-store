@@ -107,6 +107,14 @@ describe("ArrayMutator", () => {
     })
   })
 
+  describe("#map", () => {
+    it("map array items", () => {
+      const users = new ArrayMutator(store, new Path("users"))
+      const names = users.map(user => user.name)
+      expect(names).to.deep.equal(["Diego", "Bianca"])
+    })
+  })
+
   describe("Symbol.toStringTag", () => {
     it("overrides the toString behavior", () => {
       const mutator = new ArrayMutator(store, new Path("users", 0, "comments"))

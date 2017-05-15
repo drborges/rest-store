@@ -31,6 +31,10 @@ export class ArrayMutator<T: Object> extends Mutator<T> {
     return createMutator(this.store, this.path, view)
   }
 
+  map(fn) {
+    return this.$get.map(fn)
+  }
+
   get $get(): T[] {
     return this.store.get(this.path).filter((_, i) => this.view.includes(i))
   }
