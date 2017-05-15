@@ -20,7 +20,9 @@ export class ObjectMutator<T: Object> extends Mutator<T> {
   *[Symbol.iterator](): Iterable<[string, Mutator<T>]> {
     const value = this.store.get(this.path)
     for (let prop in value) {
-      const mutator = createMutator(this.store, this.path.child(prop))
+      const val = value[prop]
+      const needsMutator = typeof(val) === "object"
+      const mutator = needsMutator ? createMutator(this.store, this.path.child(prop)) : val
       yield [prop, mutator]
     }
   }

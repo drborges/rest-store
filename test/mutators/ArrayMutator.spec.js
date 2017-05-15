@@ -90,24 +90,20 @@ describe("ArrayMutator", () => {
       const usersMutator = new ArrayMutator(store, path)
       const [head, ...tail] = usersMutator
 
-      expect(head.$get).to.deep.equal({
-        name: "Diego", comments: [],
-      })
-
+      expect(head.name).to.equal("Diego")
       expect(tail.$get).to.deep.equal([
         { name: "Bianca", comments: [{ text: "Nice!" }] },
       ])
     })
-  })
 
-  describe("#$get", () => {
-    it("fetches underlying value from store", () => {
-      const path = new Path("users")
-      const mutator = new ArrayMutator(store, path)
+    it("supports array with primitive values", () => {
+      const store = new RestStore(deepFreeze([0, 1, 2]))
+      const mutator = new ArrayMutator(store, new Path)
 
-      const users = mutator.$get
-
-      expect(users).to.deep.equal(store.get(path))
+      let i = 0
+      for (let item of mutator) {
+        expect(item).to.equal(i++)
+      }
     })
   })
 

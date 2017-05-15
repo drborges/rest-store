@@ -37,7 +37,12 @@ export class ArrayMutator<T: Object> extends Mutator<T> {
 
   *[Symbol.iterator](): Iterator<Mutator<T>> {
     for (let index of this.view) {
-      yield createMutator(this.store, this.path.child(index))
+      const val = this.store.get(this.path.child(index))
+      if (typeof(val) !== "object") {
+        yield val
+      } else {
+        yield createMutator(this.store, this.path.child(index))
+      }
     }
   }
 }

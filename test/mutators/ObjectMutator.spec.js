@@ -61,11 +61,9 @@ describe("ObjectMutator", () => {
   describe("#$get", () => {
     it("fetches underlying value from store", () => {
       const path = new Path("users", 1)
-      const userMutator = new ObjectMutator(store, path)
+      const user = new ObjectMutator(store, path)
 
-      const user = userMutator.$get
-
-      expect(user).to.deep.equal(store.get(path))
+      expect(user.name).to.equal(store.get(path).name)
     })
   })
 
@@ -87,21 +85,23 @@ describe("ObjectMutator", () => {
     it("supports for .. of loop", () => {
       const path = new Path("users", 0)
       const mutator = new ObjectMutator(store, path)
+      const keyValues = []
 
       for (let [prop, value] of mutator) {
-        const storeVal = store.get(path.child(prop))
-        const propVal = mutator[prop].$get
-
-        expect(propVal).to.deep.equal(storeVal)
-        expect(propVal).to.deep.equal(value.$get)
+        keyValues.push([prop, value])
       }
+
+      expect(keyValues[0][0]).to.equal("name")
+      expect(keyValues[0][1]).to.equal("Diego")
+      expect(keyValues[1][0]).to.equal("comments")
+      expect(keyValues[1][1].$get).to.deep.equal([])
     })
 
     it("supports destructuring", () => {
       const mutator = new ObjectMutator(store, new Path("users", 0))
       const { name, comments } = mutator
 
-      expect(name.$get).to.equal("Diego")
+      expect(name).to.equal("Diego")
       expect(comments.$get).to.be.empty
     })
 
@@ -110,7 +110,7 @@ describe("ObjectMutator", () => {
       const keyValues = [...mutator]
 
       expect(keyValues[0][0]).to.equal("name")
-      expect(keyValues[0][1].$get).to.equal("Diego")
+      expect(keyValues[0][1]).to.equal("Diego")
       expect(keyValues[1][0]).to.equal("comments")
       expect(keyValues[1][1].$get).to.deep.equal([])
     })
