@@ -19,6 +19,24 @@ export class ArrayMutator<T: Object> extends Mutator<T> {
     this.length = this.view.length
   }
 
+  get(target: Object, prop: string, receiver: Object) {
+    if (this[prop]) {
+      return this[prop]
+    }
+
+    if (Number.isInteger(Number.parseInt(prop))) {
+      return createMutator(this.store, this.path.child(this.view[prop]))
+    }
+
+    const nextPath = this.path.child(prop)
+    const val = this.store.get(nextPath)
+    if (typeof(val) !== "object") {
+      return val
+    }
+
+    return createMutator(this.store, nextPath)
+  }
+
   push(data: T) {
     return this.store.map(this.path, (array: T[]) => [
       ...array,
@@ -33,6 +51,18 @@ export class ArrayMutator<T: Object> extends Mutator<T> {
 
   map(fn) {
     return this.$get.map(fn)
+  }
+
+  filter(predicate) {
+    const view = []
+
+    this.$get.forEach((item, i) => {
+      if (predicate(item)) {
+        view.push(i)
+      }
+    })
+
+    return createMutator(this.store, this.path, view)
   }
 
   get $get(): T[] {

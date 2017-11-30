@@ -13,12 +13,28 @@ export class ObjectMutator<T: Object> extends Mutator<T> {
     super(store, path)
   }
 
+  get(target: Object, prop: string, receiver: Object) {
+    if (this[prop]) {
+      return this[prop]
+    }
+
+    const nextPath = this.path.child(prop)
+    const val = this.store.get(nextPath)
+
+    if (typeof(val) !== "object") {
+      return val
+    }
+
+    return createMutator(this.store, nextPath)
+  }
+
   merge(data: T) {
     this.store.patch(this.path, data)
   }
 
   *[Symbol.iterator](): Iterable<[string, Mutator<T>]> {
     const value = this.store.get(this.path)
+
     for (let prop in value) {
       const val = value[prop]
       const needsMutator = typeof(val) === "object"

@@ -115,6 +115,16 @@ describe("ArrayMutator", () => {
     })
   })
 
+  describe("#filter", () => {
+    it("filters out unwanted items", () => {
+      const users = new ArrayMutator(store, new Path("users"))
+      const filtered = users.filter(user => user.name === "Bianca")
+      filtered[0].name = "Bibi"
+
+      expect(users[1].name).to.equal("Bibi")
+    })
+  })
+
   describe("Symbol.toStringTag", () => {
     it("overrides the toString behavior", () => {
       const mutator = new ArrayMutator(store, new Path("users", 0, "comments"))
