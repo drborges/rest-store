@@ -1,6 +1,6 @@
 // @flow
 
-import type { StoreActions } from "./types"
+import type { StoreActions, Listener } from "./types"
 
 import Path from "./Path"
 import update from "immutability-helper"
@@ -20,9 +20,14 @@ const applyMutation = <T>(state: T, path: Path, operation: StoreActions) => {
 
 export default class RestStore<T: Object> {
   state: T
+  listeners: Array<Listener<T>> = []
 
   constructor(initialState: T) {
     this.state = initialState
+  }
+
+  subscribe(listener: Listener<T>) {
+    this.listeners.push(listener)
   }
 
   get(path: Path): any {
@@ -35,17 +40,25 @@ export default class RestStore<T: Object> {
 
   put(path: Path, value: any) {
     this.state = applyMutation(this.state, path, actions.set(value))
+    this.notify()
   }
 
   patch(path: Path, value: any) {
     this.state = applyMutation(this.state, path, actions.merge(value))
+    this.notify()
   }
 
   map(path: Path, fn: (any) => any) {
     this.state = applyMutation(this.state, path, actions.map(fn))
+    this.notify()
   }
 
   delete(path: any, index: number) {
     this.state = applyMutation(this.state, path, actions.delete(index))
+    this.notify()
+  }
+
+  notify() {
+    this.listeners.forEach(listener => listener(this.state))
   }
 }

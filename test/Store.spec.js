@@ -130,4 +130,46 @@ describe("Store", () => {
       })
     })
   })
+
+  describe("#subscribe", () => {
+    it("notifies listeners upon #put operations", () => {
+      store.subscribe(state => {
+        expect(state).to.deep.equal({
+          users: [
+            { name: "Borges", comments: [] },
+            { name: "Bianca", comments: [{ text: "Nice!" }] },
+          ]
+        })
+      })
+
+      store.state.users[0].name = "Borges"
+    })
+
+    it("notifies listeners upon #patch operations", () => {
+      store.subscribe(state => {
+        expect(state).to.deep.equal({
+          users: [
+            { name: "Diego", comments: [], age: 32 },
+            { name: "Bianca", comments: [{ text: "Nice!" }] },
+          ]
+        })
+      })
+
+      store.state.users[0].merge({ age: 32 })
+    })
+
+    it("notifies listeners upon #map operations", () => {
+      store.subscribe(state => {
+        expect(state).to.deep.equal({
+          users: [
+            { name: "Diego", comments: [] },
+            { name: "Bianca", comments: [{ text: "Nice!" }] },
+            { name: "Hernando" },
+          ]
+        })
+      })
+
+      store.state.users.push({ name: "Hernando" })
+    })
+  })
 })

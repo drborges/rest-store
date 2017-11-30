@@ -4,6 +4,8 @@ import Path from "./Path"
 import RestStore from "./RestStore"
 import { createMutator } from "./mutators"
 
+import type { Listener } from "./types"
+
 export default class Store<T: Object> {
   rest: RestStore<T>
 
@@ -13,5 +15,9 @@ export default class Store<T: Object> {
 
   get state(): T {
     return createMutator(this.rest, Path.root)
+  }
+
+  subscribe(listener: Listener<T>) {
+    this.rest.subscribe(listener)
   }
 }
