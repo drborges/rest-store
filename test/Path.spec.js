@@ -60,6 +60,28 @@ describe("Path", () => {
     })
   })
 
+  describe("#parse", () => {
+    it("parses a given path string representation", () => {
+      const path = "/users/1/comments";
+      const parsed = Path.parse(path);
+
+      expect(parsed.toString()).to.eq(path);
+    });
+  });
+
+  describe("#isAncestorOf", () => {
+    it("detects descendants of a given path", () => {
+      const ancestor = new Path("users", "1")
+      const descendant1 = new Path("users", "1", "name")
+      const descendant2 = new Path("users", "1", "comments")
+      const nonDescendant = new Path("users", "0", "comments")
+
+      expect(ancestor.isAncestorOf(descendant1)).to.eq(true)
+      expect(ancestor.isAncestorOf(descendant2)).to.eq(true)
+      expect(ancestor.isAncestorOf(nonDescendant)).to.eq(false)
+    })
+  })
+
   describe("#walk", () => {
     it("walks an object", () => {
       const path = new Path("users", "0", "comments", "1")

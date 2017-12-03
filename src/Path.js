@@ -8,6 +8,11 @@ import { CachedBy } from "./decorators"
 export default class Path {
   static root = new Path
 
+  static parse = (str: String): Path => {
+    const nodes = str.split("/").slice(1)
+    return new Path(...nodes)
+  }
+
   nodes: PathNode[]
 
   constructor(...nodes: PathNode[]) {
@@ -25,6 +30,10 @@ export default class Path {
   match(path: Path): boolean {
     const pattern = new RegExp(`^${path.toString()}$`)
     return pattern.test(this.toString())
+  }
+
+  isAncestorOf(path: Path): boolean {
+    return path.match(this.child(".*"));
   }
 
   walk(obj: Object|any[]): any {

@@ -18,7 +18,7 @@ const applyMutation = <T>(state: T, path: Path, operation: StoreActions) => {
   return update(state, mutation)
 }
 
-export default class RestStore<T: Object> {
+export default class ReStore<T: Object> {
   state: T
   listeners: Array<Listener<T>> = []
 

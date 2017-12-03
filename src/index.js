@@ -1,1 +1,2 @@
-export { Store } from "./Store"
+export { ReStore } from "./ReStore"
+export default StateTree from "./StateTree"
