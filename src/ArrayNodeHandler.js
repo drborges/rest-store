@@ -13,7 +13,7 @@ export default class ArrayNodeHandler extends NodeHandler {
   }
 
   push = (items) => (item) => {
-    this.stateTree.store.put(this.path, [
+    this.stateTree.store.set(this.path, [
       ...items,
       item,
     ]);
@@ -33,7 +33,7 @@ export default class ArrayNodeHandler extends NodeHandler {
     const spliced = [...items];
     const removed = spliced.splice(start, removeCount, ...newItems);
 
-    this.stateTree.store.put(this.path, spliced);
+    this.stateTree.store.set(this.path, spliced);
 ;
     this.refresh(this.path.child(start));
     return removed;

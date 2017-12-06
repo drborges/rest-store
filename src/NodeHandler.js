@@ -67,7 +67,7 @@ export default class NodeHandler {
 
     const childPath = this.path.child(prop);
 
-    this.stateTree.store.put(childPath, value);
+    this.stateTree.store.set(childPath, value);
     this.refresh(childPath);
 
     return true;

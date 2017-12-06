@@ -56,7 +56,7 @@ describe("Store", () => {
     it("updates path with new value", () => {
       const path = new Path("users", 0, "name")
 
-      store.put(path, "Borges")
+      store.set(path, "Borges")
 
       expect(store.get(path)).to.equal("Borges")
     })
@@ -66,7 +66,7 @@ describe("Store", () => {
     it("partially updates path with extra data", () => {
       const path = new Path("users", 0)
 
-      store.patch(path, { age: 31 })
+      store.merge(path, { age: 31 })
 
       expect(store.get(path)).to.deep.equal({
         name: "Diego",
@@ -111,7 +111,7 @@ describe("Store", () => {
         })
       })
 
-      store.put(new Path("users", 0, "name"), "Borges")
+      store.set(new Path("users", 0, "name"), "Borges")
     })
 
     it("notifies listeners upon #patch operations", () => {
@@ -124,7 +124,7 @@ describe("Store", () => {
         })
       })
 
-      store.patch(new Path("users", 0), { age: 32 })
+      store.merge(new Path("users", 0), { age: 32 })
     })
 
     it("notifies listeners upon #map operations", () => {

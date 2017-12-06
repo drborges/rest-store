@@ -38,12 +38,12 @@ export default class ReStore<T: Object> {
     }
   }
 
-  put(path: Path, value: any) {
+  set(path: Path, value: any) {
     this.state = applyMutation(this.state, path, actions.set(value))
     this.notify()
   }
 
-  patch(path: Path, value: any) {
+  merge(path: Path, value: any) {
     this.state = applyMutation(this.state, path, actions.merge(value))
     this.notify()
   }
