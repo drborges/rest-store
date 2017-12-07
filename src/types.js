@@ -3,7 +3,7 @@
 import type Path from "./Path"
 
 export type PathNode = string | number
-export type TreeNode = Proxy<NodeHandler>
+export type TreeNode = Proxy
 export type Children = { [string]: TreeNode }
 export type CacheKeyResolver = (...any) => string
 

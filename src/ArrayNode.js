@@ -1,4 +1,4 @@
-import NodeHandler from "./NodeHandler"
+import Node from "./Node"
 
 import type { TreeNode, Children } from "./types"
 
@@ -9,7 +9,7 @@ import type { TreeNode, Children } from "./types"
  * however, mutations are only applied to the StateTree in an
  * immutable fashion, and the proxied data is never touched.
  */
-export default class ArrayNodeHandler extends NodeHandler {
+export default class ArrayNode extends Node {
   constructor(stateTree: StateTree, path: Path, $parent: TreeNode, $children: Children) {
     super(stateTree, path, $parent, $children)
   }

@@ -1,8 +1,8 @@
 import Path from "./Path"
 import ReStore from "./ReStore"
-import NodeHandler from "./NodeHandler"
-import ArrayNodeHandler from "./ArrayNodeHandler"
-import ObjectNodeHandler from "./ObjectNodeHandler"
+import Node from "./Node"
+import ArrayNode from "./ArrayNode"
+import ObjectNode from "./ObjectNode"
 
 import type { TreeNode, Children } from "./types"
 
@@ -18,8 +18,8 @@ export default class StateTree {
 
     const obj = this.store.get(path)
     const handler = Array.isArray(obj) ?
-      new ArrayNodeHandler(this, path, $parent, $children) :
-      new ObjectNodeHandler(this, path, $parent, $children)
+      new ArrayNode(this, path, $parent, $children) :
+      new ObjectNode(this, path, $parent, $children)
 
     return new Proxy(obj, handler)
   }

@@ -3,7 +3,7 @@ import type { TreeNode, Children } from "./types"
 /**
  * Represents a Node in the StateTree
  */
-export default class NodeHandler {
+export default class Node {
   static proxiables = {
     Object: true,
     Array: true,
@@ -23,7 +23,7 @@ export default class NodeHandler {
    */
   isProxy(value) {
     return value && Object
-      .keys(NodeHandler.proxiables)
+      .keys(Node.proxiables)
       .includes(value.constructor.name)
   }
 
