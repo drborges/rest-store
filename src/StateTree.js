@@ -9,7 +9,11 @@ export default class StateTree {
     this.store = store
   }
 
-  create(path = Path.root, parent = null, $children = {}) {
+  create(path: string|Path = Path.root, parent = null, $children = {}) {
+    if (path.constructor === String) {
+      path = Path.parse(path)
+    }
+
     const obj = this.store.get(path)
     const handler = Array.isArray(obj) ?
       new ArrayNodeHandler(this, path, parent, $children) :

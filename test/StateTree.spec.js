@@ -53,7 +53,7 @@ describe("StateTree", () => {
       const data = { user: { name: "Diego", age: 32 }}
       const store = new ReStore(data)
 
-      const userProxy = new StateTree(store).create(new Path("user"))
+      const userProxy = new StateTree(store).create("/user")
 
       expect(store.state).to.eq(data)
       expect(userProxy).to.not.eq(store.state.user)
@@ -178,7 +178,7 @@ describe("StateTree", () => {
 
       const store = new ReStore(data)
 
-      const usersProxy = new StateTree(store).create(new Path("users"))
+      const usersProxy = new StateTree(store).create("/users")
 
       expect(store.state).to.eq(data)
       expect(usersProxy).to.not.eq(store.state.users)
