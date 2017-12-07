@@ -13,8 +13,6 @@ export default class Path {
     return new Path(...nodes)
   }
 
-  nodes: PathNode[]
-
   constructor(...nodes: PathNode[]) {
     this.nodes = nodes
   }
@@ -30,10 +28,6 @@ export default class Path {
   match(path: Path): boolean {
     const pattern = new RegExp(`^${path.toString()}$`)
     return pattern.test(this.toString())
-  }
-
-  isAncestorOf(path: Path): boolean {
-    return path.match(this.child(".*"))
   }
 
   walk(obj: Object|any[]): any {
