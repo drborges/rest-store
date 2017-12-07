@@ -1,3 +1,5 @@
+import type { TreeNode, Children } from "./types"
+
 /**
  * Represents a Node in the StateTree
  */
@@ -7,11 +9,11 @@ export default class NodeHandler {
     Array: true,
   }
 
-  constructor(stateTree: StateTree, path: Path, parent: NodeHandler = null, $children = {}) {
+  constructor(stateTree: StateTree, path: Path, $parent: TreeNode = null, $children: Children = {}) {
     this.stateTree = stateTree
-    this.path = path
-    this.parent = parent
+    this.$parent = $parent
     this.$children = $children
+    this.path = path
   }
 
   /**
@@ -81,8 +83,8 @@ export default class NodeHandler {
     const $child = this.$children[childPath]
     delete this.$children[childPath]
 
-    if (this.parent) {
-      this.parent.refresh(this.path)
+    if (this.$parent) {
+      this.$parent.refresh(this.path)
     }
 
     if ($child) {

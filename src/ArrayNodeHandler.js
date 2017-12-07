@@ -1,5 +1,7 @@
 import NodeHandler from "./NodeHandler"
 
+import type { TreeNode, Children } from "./types"
+
 /**
  * Represents a Node in the StateTree of type Array
  *
@@ -8,8 +10,8 @@ import NodeHandler from "./NodeHandler"
  * immutable fashion, and the proxied data is never touched.
  */
 export default class ArrayNodeHandler extends NodeHandler {
-  constructor(stateTree: StateTree, path: Path, parent: NodeHandler, $children: Object) {
-    super(stateTree, path, parent, $children)
+  constructor(stateTree: StateTree, path: Path, $parent: TreeNode, $children: Children) {
+    super(stateTree, path, $parent, $children)
   }
 
   push = (items) => (item) => {

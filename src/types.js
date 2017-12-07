@@ -3,6 +3,8 @@
 import type Path from "./Path"
 
 export type PathNode = string | number
+export type TreeNode = Proxy<NodeHandler>
+export type Children = { [string]: TreeNode }
 export type CacheKeyResolver = (...any) => string
 
 export type StoreApplyAction = { $apply: any => any }
