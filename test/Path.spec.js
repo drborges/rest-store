@@ -62,12 +62,12 @@ describe("Path", () => {
 
   describe("#parse", () => {
     it("parses a given path string representation", () => {
-      const path = "/users/1/comments";
-      const parsed = Path.parse(path);
+      const path = "/users/1/comments"
+      const parsed = Path.parse(path)
 
-      expect(parsed.toString()).to.eq(path);
-    });
-  });
+      expect(parsed.toString()).to.eq(path)
+    })
+  })
 
   describe("#isAncestorOf", () => {
     it("detects descendants of a given path", () => {

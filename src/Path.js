@@ -33,7 +33,7 @@ export default class Path {
   }
 
   isAncestorOf(path: Path): boolean {
-    return path.match(this.child(".*"));
+    return path.match(this.child(".*"))
   }
 
   walk(obj: Object|any[]): any {

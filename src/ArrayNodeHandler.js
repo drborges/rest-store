@@ -1,4 +1,4 @@
-import NodeHandler from "./NodeHandler";
+import NodeHandler from "./NodeHandler"
 
 /**
  * Represents a Node in the StateTree of type Array
@@ -9,33 +9,33 @@ import NodeHandler from "./NodeHandler";
  */
 export default class ArrayNodeHandler extends NodeHandler {
   constructor(stateTree: StateTree, path: Path, parent: NodeHandler, $children: Object) {
-    super(stateTree, path, parent, $children);
+    super(stateTree, path, parent, $children)
   }
 
   push = (items) => (item) => {
     this.stateTree.store.set(this.path, [
       ...items,
       item,
-    ]);
+    ])
 
-    this.refresh(this.path.child(items.length));
-  };
+    this.refresh(this.path.child(items.length))
+  }
 
   pop = (items) => () => {
-    const lastItemIndex = items.length - 1;
-    const lastItem = items[lastItemIndex];
-    this.stateTree.store.delete(this.path, lastItemIndex);
-    this.refresh(this.path.child(lastItemIndex));
-    return lastItem;
-  };
+    const lastItemIndex = items.length - 1
+    const lastItem = items[lastItemIndex]
+    this.stateTree.store.delete(this.path, lastItemIndex)
+    this.refresh(this.path.child(lastItemIndex))
+    return lastItem
+  }
 
   splice = (items) => (start, removeCount, ...newItems) => {
-    const spliced = [...items];
-    const removed = spliced.splice(start, removeCount, ...newItems);
+    const spliced = [...items]
+    const removed = spliced.splice(start, removeCount, ...newItems)
 
-    this.stateTree.store.set(this.path, spliced);
-;
-    this.refresh(this.path.child(start));
-    return removed;
-  };
+    this.stateTree.store.set(this.path, spliced)
+
+    this.refresh(this.path.child(start))
+    return removed
+  }
 }

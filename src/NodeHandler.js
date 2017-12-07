@@ -5,13 +5,13 @@ export default class NodeHandler {
   static proxiables = {
     Object: true,
     Array: true,
-  };
+  }
 
   constructor(stateTree: StateTree, path: Path, parent: NodeHandler = null, $children = {}) {
-    this.stateTree = stateTree;
-    this.path = path;
-    this.parent = parent;
-    this.$children = $children;
+    this.stateTree = stateTree
+    this.path = path
+    this.parent = parent
+    this.$children = $children
   }
 
   /**
@@ -22,7 +22,7 @@ export default class NodeHandler {
   isProxy(value) {
     return value && Object
       .keys(NodeHandler.proxiables)
-      .includes(value.constructor.name);
+      .includes(value.constructor.name)
   }
 
   /**
@@ -34,26 +34,26 @@ export default class NodeHandler {
    */
   get(target, prop) {
     if (prop === "$children") {
-      return this.$children;
+      return this.$children
     }
 
-    const value = target[prop];
+    const value = target[prop]
 
     if (typeof value === "function") {
-      return this[prop] && this[prop](target) || value.bind(target);
+      return this[prop] && this[prop](target) || value.bind(target)
     }
 
     if (!this.isProxy(value)) {
-      return value;
+      return value
     }
 
-    const childPath = this.path.child(prop);
+    const childPath = this.path.child(prop)
 
     if (!this.$children[childPath]) {
-      this.$children[childPath] = this.stateTree.create(childPath, this);
+      this.$children[childPath] = this.stateTree.create(childPath, this)
     }
 
-    return this.$children[childPath];
+    return this.$children[childPath]
   }
 
   /**
@@ -62,15 +62,15 @@ export default class NodeHandler {
    */
   set(target, prop, value) {
     if (prop === "$children") {
-      return true;
+      return true
     }
 
-    const childPath = this.path.child(prop);
+    const childPath = this.path.child(prop)
 
-    this.stateTree.store.set(childPath, value);
-    this.refresh(childPath);
+    this.stateTree.store.set(childPath, value)
+    this.refresh(childPath)
 
-    return true;
+    return true
   }
 
   /**
@@ -78,15 +78,15 @@ export default class NodeHandler {
    * leaving alone nodes that were not affected by the given mutation.
    */
   refresh(childPath: Path) {
-    const $child = this.$children[childPath];
-    delete this.$children[childPath];
+    const $child = this.$children[childPath]
+    delete this.$children[childPath]
 
     if (this.parent) {
-      this.parent.refresh(this.path);
+      this.parent.refresh(this.path)
     }
 
     if ($child) {
-      this.$children[childPath] = this.stateTree.create(childPath, this, $child.$children);
+      this.$children[childPath] = this.stateTree.create(childPath, this, $child.$children)
     }
   }
 }
