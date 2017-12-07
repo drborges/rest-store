@@ -2,187 +2,187 @@
 
 State management made with ❤️.
 
-# Components
+# TODO
 
-Mutator = ArrayMutator | ObjectMutator | ValueMutator
-MutationPath = Path
+- [ ] Rename ReStore.js file to engine.js
+- [ ] Rename StateTree.js to Restore.js
+- [ ] Hide Path.js from the outside world.
+- [ ] Hide engine.js from the outside world.
+
+# Thoughts
+
+### StateTree: Transactional Updates?
+
+**Provided by** `restore`
+
+Allow for multiple mutations to happen within the same transaction, ultimately causing a single mutation to the StateTree
 
 ```js
-@Mutator
-class Store<T> {
-  constructor(initialState: T) {
-    this.state = initialState
+class App {
+
+  startTodo(index) {
+    app.state.transaction(() => {
+      const removed = app.state.todos.removeAt(index)
+      app.state.doing.push(removed)
+    })
   }
 }
 
-type MyState = {
-  users: User[],
-  network: {
-    activity: "idle" | "busy",
-    retries: number,
+class App {
+
+  @app.transaction
+  startTodo(index) {
+    const removed = app.state.todos.removeAt(index)
+    app.state.doing.push(removed)
+  }
+}
+```
+
+### @app.model: Data Layer
+
+**Provided by** `restore-model`
+
+```jsx
+const initialState = {
+  users: [],
+  board: {
+    todos: [],
+    doing: [],
+    done: [],
   },
 }
 
-const store = new reflux.Store<MyState>({
-  users: [{ name: "diego" }],
-  network: {
-    activity: "idle",
-    retries: 3,
-  }
-})
+const app = new ReStore(initialState)
 
-store.subscribe((state, event) => event.path; event.action)
-store.catch((error, event) => )
+app.subscribe("/users", (users) => console.log("users list changed!", users))
 
-try {
-  const user = await store.state.users.push({ name: "bianca" })
-  const response = await api.users.create(user)
-  if (response.status !== 201) {
-    throw new Error(response.message)
+app.subscribe("/board", (board) => console.log("TODO board was changed!", board))
+```
+
+```js
+@app.model("/board")
+class Board {
+  constructor({ todos, doing, done }) {
+    this.todos = todos
+    this.doing = doing
+    this.done = done
   }
-} catch(e) {
-  store.state.users.delete(user)
+
+  createTodo() {
+    this.todos.push({ id: Math.random() })
+  }
+
+  startTodo(index: number) {
+    const removed = this.todos.removeAt(index)
+    this.doing.push(removed.start())
+  }
+
+  finishTodo(index: number) {
+    const removed = this.doing.removeAt(index)
+    this.doing.push(removed.finish())
+  }
 }
 
-// => notifies subscribers
-store.state.users[0].name = "borges"
-// => notifies subscribers
-store.state.users.push(api.users.create({ name: "ronaldo" }))
-// => notifies subscribers
-```
+@app.model(
+  "/board/todos/:index",
+  "/board/doing/:index",
+  "/board/done/:index",
+)
+class Todo {
+  constructor({ title, description, status = "todo" }) {
+    this.title = title
+    this.description = description
+    this.status = status
+  }
 
-```js
-class Store {}
+  finish() {
+    this.status = "done"
+  }
 
-const store = new Store({
-  users: [
-    { name: "Diego" },
-    { name: "Bianca" },
-  ]
-})
-
-const diego = store.state.users[0]
-// => new ObjectMutator(store, new Path("users", "0"))
-
-const users = store.state.users
-// => new ArrayMutator(store, new Path("users", "0"))
-
-diego.name = "Diego Borges"
-// => triggers store mutation at /users/0/name
-```
-
-```js
-class Subscription {}
-
-const subscription = new Subscription(new Path("users", ".", "comments", "0"), subscriber)
-
-subscription.accept(new Path("users", "1", "comments", "0"))
-// => true
-
-subscription.accept(new Path("users", "1", "comments", "1"))
-// => false
-
-subscription.notify(data)
-// => subscriber(data)
-```
-
-```js
-@Cached
-class Path {}
-
-const path = new Path("users", "0", "comments")
-path.match(new Path("users", "0", "comments"))
-// => true
-path.match(new Path("users", ".", "comments"))
-// => true
-path.match(new Path("users", "1", "comments"))
-// => false
-path.next("1")
-// => new Path("users", "0", "comments", "1")
-path.parent()
-// => new Path("users", "0", "comments")
-
-const store = {
-  users: [
-    { name: "diego", comments: [{ text: "LoL" }]}
-  ]
+  start() {
+    this.status = "doing"
+  }
 }
 
-path.walk(store)
-// => [{ text: "LoL" }]
+@app.model("/users/:index")
+class User {
+  constructor({ firstName, lastName }) {
+    this.firstName = firstName
+    this.lastName = lastName
+  }
+
+  get fullName(): string {
+    return `${this.firstName} ${this.lastName}`
+  }
+}
 ```
 
-```js
-@Abstract
-class Mutator {}
+### @app.inject: Injecting portions of the StateTree into a React Component
+
+**Provided by** `restore-react`
+
+```jsx
+@app.inject("/users", "/board")
+class BoardView extends React.Component {
+  render() {
+    return (
+      <Board onCreateTodo={this.state.board.createTodo}>
+        <Column title="Todos" data={this.state.board.todos} />
+        <Column title="Todos" data={this.state.board.doing} />
+        <Column title="Todos" data={this.state.board.done} />
+      </Board>
+    )
+  }
+}
 ```
 
-```js
-@CachedPath
-@ObjectProxy
-class ValueMutator extends Mutator {}
+```jsx
+@app.inject("/users")
+class UsersView extends React.Component {
+  render() {
+    const users = this.state.users.map(user => (
+      <li key={user.id}>{user.fullName}</li>
+    ))
 
-const name = new ObjectMutator(store, new Path("users", "0", "name"))
-
-name.get()
-// => "Diego"
-
-name.set("Diego Borges")
-// => {
-//   users: [
-//     { name: "Diego Borges" },
-//     { name: "Bianca" },
-//   ]
-// }
+    return (
+      <div>
+        <ul>
+          {users}
+        </ul>
+      </div>
+    )
+  }
+}
 ```
 
+Use `HOC` to timplement `@app.inject`:
+
 ```js
-@ObjectProxy
-@CachedMutator
-class ObjectMutator extends Mutator {}
+const inject = (...paths) => (Component) {
+  return class extends React.Component {
+    render() {
+      const parsedPaths = paths.map(path => Path.parse(path))
+      const injected = parsedPaths.reduce((injected, path) => {
+        const value = path.walk(app.state)
+        const propName = path.nodes.pop()
+        injected[propName] = value
+        return injected
+      })
 
-const diego = new ObjectMutator(store, new Path("users", "0"))
-diego.get()
-// => { name: "Diego" }
-
-diego.name.get()
-// => "Diego"
-
-// causes a mutation to the path /users/0/name, yielding a new state but keeping all paths not affected by this mutation:
-diego.name = "Diego Borges"
-// => {
-//   users: [
-//     { name: "Diego Borges" },
-//     { name: "Bianca" },
-//   ]
-// }
+      return <Component {...this.props} {...injected} />
+    }
+  }
+}
 ```
 
+### restore-timetravel Package
+
+Provides state timetravel functionality.
+
 ```js
-@ArrayProxy
-@CachedMutator
-class ArrayMutator extends Mutator {}
+import withTimetravel from "restore-timetravel"
 
-const users = new ArrayMutator(store, new Path("users"))
-
-users.get()
-// => [
-//      { name: "Diego" },
-//      { name: "Bianca" },
-//    ]
-
-// causes a mutation to the path /users
-users.push({ name: "Hernando" })
-// => [
-//      { name: "Diego" },
-//      { name: "Bianca" },
-//      { name: "Hernando" },
-//    ]
-
-// causes a mutation to the path /users
-users.remove(0)
-// => [
-//      { name: "Bianca" },
-//      { name: "Hernando" },
-//    ]
+const appWithTimetravel = withTimetravel(new Restore)
+appWithTimetravel.back(2)
+appWithTimetravel.forward(1)
 ```
